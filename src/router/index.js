@@ -68,52 +68,52 @@ export const constantRoutes = [
   },
 
 
-  {
-        path: '/activityManage',
-        component: Layout,
-        hidden: true,
-        redirect: 'noredirect',
-        children: [
-          {
-            path: 'liveGoodsSetting',
-            component: (resolve) => require(['@/views/activityManage/liveGoodsSetting/index'], resolve),
-            name: 'liveGoodsSetting',
-            meta: { title: '直播商品配置', icon: 'user' }
-          }
-        ],
- },
+ //  {
+ //        path: '/activityManage',
+ //        component: Layout,
+ //        hidden: true,
+ //        redirect: 'noredirect',
+ //        children: [
+ //          {
+ //            path: 'liveGoodsSetting',
+ //            component: (resolve) => require(['@/views/activityManage/liveGoodsSetting/index'], resolve),
+ //            name: 'liveGoodsSetting',
+ //            meta: { title: '直播商品配置', icon: 'user' }
+ //          }
+ //        ],
+ // },
 
- {
-   path: '/app',
-   component: Layout,
-   hidden: true,
-   redirect: 'noredirect',
-   children: [
-     {
-       path: 'designerExample',
-       component: (resolve) => require(['@/views/app/designerExample/index'], resolve),
-       name: 'designerExample',
-       meta: { title: '设计师案例',icon: 'user'}
-     }
-   ]
- },
+ // {
+ //   path: '/app',
+ //   component: Layout,
+ //   hidden: true,
+ //   redirect: 'noredirect',
+ //   children: [
+ //     {
+ //       path: 'designerExample',
+ //       component: (resolve) => require(['@/views/app/designerExample/index'], resolve),
+ //       name: 'designerExample',
+ //       meta: { title: '设计师案例',icon: 'user'}
+ //     }
+ //   ]
+ // },
 
 
 
-  {
-        path: '/activityManage',
-        component: Layout,
-        hidden: true,
-        redirect: 'noredirect',
-        children: [
-          {
-            path: 'liveControl',
-            component: (resolve) => require(['@/views/activityManage/liveControl/index'], resolve),
-            name: 'liveControl',
-            meta: { title: '控制面板', icon: 'user' }
-          }
-        ]
-      },
+ //  {
+ //        path: '/activityManage',
+ //        component: Layout,
+ //        hidden: true,
+ //        redirect: 'noredirect',
+ //        children: [
+ //          {
+ //            path: 'liveControl',
+ //            component: (resolve) => require(['@/views/activityManage/liveControl/index'], resolve),
+ //            name: 'liveControl',
+ //            meta: { title: '控制面板', icon: 'user' }
+ //          }
+ //        ]
+ //      },
 
 
 
@@ -199,36 +199,36 @@ export const constantRoutes = [
   },
 
 
-  {
-        path: '/activityManage',
-        component: Layout,
-        hidden: true,
-        redirect: 'noredirect',
-        children: [
-          {
-            path: 'wxConfig',
-            component: (resolve) => require(['@/views/activityManage/wxConfig/index'], resolve),
-            name: 'wxConfig',
-            meta: { title: '大区列表', icon: 'user' }
-          }
-        ]
-      },
-      
-      
-   {
-         path: '/activityManage',
-         component: Layout,
-         hidden: true,
-         redirect: 'noredirect',
-         children: [
-           {
-             path: 'groupConfig',
-             component: (resolve) => require(['@/views/activityManage/groupConfig/index'], resolve),
-             name: 'groupConfig',
-             meta: { title: '战队列表', icon: 'user' }
-           }
-         ]
-       },   
+  // {
+  //       path: '/activityManage',
+  //       component: Layout,
+  //       hidden: true,
+  //       redirect: 'noredirect',
+  //       children: [
+  //         {
+  //           path: 'wxConfig',
+  //           component: (resolve) => require(['@/views/activityManage/wxConfig/index'], resolve),
+  //           name: 'wxConfig',
+  //           meta: { title: '大区列表', icon: 'user' }
+  //         }
+  //       ]
+  //     },
+
+
+  //  {
+  //        path: '/activityManage',
+  //        component: Layout,
+  //        hidden: true,
+  //        redirect: 'noredirect',
+  //        children: [
+  //          {
+  //            path: 'groupConfig',
+  //            component: (resolve) => require(['@/views/activityManage/groupConfig/index'], resolve),
+  //            name: 'groupConfig',
+  //            meta: { title: '战队列表', icon: 'user' }
+  //          }
+  //        ]
+  //      },
 
 
 
