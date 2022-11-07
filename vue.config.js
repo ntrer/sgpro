@@ -32,14 +32,9 @@ module.exports = {
     open: true,
     proxy: {
       // http://47.98.206.211:48388
-      // http://kycloudapi.shushangsoft.com
-      // http://192.168.0.109:8080
-      // detail: https://cli.vuejs.org/config/#devserver-proxy
-      // http://kmapi.shushangsoft.com
-      //http://api.xingfurniture.com
       // http://192.168.0.106:48388
       [process.env.VUE_APP_BASE_API]: {
-        target: `http://kmapi.shushangsoft.com`,
+        target: `http://192.168.0.106:48388`,
         changeOrigin: true,
         pathRewrite: {
           ['^' + process.env.VUE_APP_BASE_API]: ''
