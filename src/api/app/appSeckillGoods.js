@@ -52,10 +52,10 @@ export function exportAppSeckillGoods(query) {
   })
 }
 
-// 查询品牌列表
-export function listBrand(query) {
+
+export function listclassification(query) {
   return request({
-    url: '/basicManage/brand/list',
+    url: '/app/classification/list',
     method: 'get',
     params: query
   })
