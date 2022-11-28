@@ -65,15 +65,16 @@ export function listArea(query) {
 
 export function listShopPayInfo(query) {
   return request({
-    url: '/basicManage/organization/getShopPayInfo',
+    url: '/basicManage/shopPayInfo/list',
     method: 'get',
     params: query
   })
 }
 
-export function listAppPayInfoId(query) {
+
+export function listappPayInfo(query) {
   return request({
-    url: '/basicManage/organization/getAppPayInfo',
+    url: '/basicManage/appPayInfo/list',
     method: 'get',
     params: query
   })

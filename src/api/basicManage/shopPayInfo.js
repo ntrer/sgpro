@@ -9,6 +9,15 @@ export function listShopPayInfo(query) {
   })
 }
 
+
+export function listappPayInfo(query) {
+  return request({
+    url: '/basicManage/appPayInfo/list',
+    method: 'get',
+    params: query
+  })
+}
+
 // 查询微信商户信息详细
 export function getShopPayInfo(id) {
   return request({

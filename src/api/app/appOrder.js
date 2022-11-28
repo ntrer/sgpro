@@ -9,32 +9,6 @@ export function listAppOrder(query) {
   })
 }
 
-// 查询活动订单详细
-export function getAppOrder(id) {
-  return request({
-    url: '/app/appOrder/' + id,
-    method: 'get'
-  })
-}
-
-// 新增活动订单
-export function addAppOrder(data) {
-  return request({
-    url: '/app/appOrder',
-    method: 'post',
-    data: data
-  })
-}
-
-// 修改活动订单
-export function updateAppOrder(data) {
-  return request({
-    url: '/app/appOrder',
-    method: 'put',
-    data: data
-  })
-}
-
 
 
 export function takegoods(data) {
@@ -46,21 +20,10 @@ export function takegoods(data) {
 }
 
 
-
-
-// 删除活动订单
-export function delAppOrder(id) {
+export function verificationAppOrder(data) {
   return request({
-    url: '/app/appOrder/' + id,
-    method: 'delete'
-  })
-}
-
-// 导出活动订单
-export function exportAppOrder(query) {
-  return request({
-    url: '/app/appOrder/export',
-    method: 'get',
-    params: query
+    url: '/app/appOrder/verification',
+    method: 'put',
+    data: data
   })
 }

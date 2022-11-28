@@ -40,22 +40,22 @@ export default {
 
   created() {
     this.userType=localStorage.getItem("userType")
-    if(this.userType!=0&&this.userType!=6){
-      this.getOrder()
+    // if(this.userType!=0&&this.userType!=6){
+    //   this.getOrder()
 
-      this.getDouYin()
-      this.getNotice()
-      this.getpricechart()
-      this.getorderchart()
+    //   this.getDouYin()
+    //   this.getNotice()
+    //   this.getpricechart()
+    //   this.getorderchart()
 
-      if(this.userType!=5&&this.userType!=11){
-        this.getforwardchart()
-        this.getActivity()
-        this.getbrowsechart()
-      }
+    //   if(this.userType!=5&&this.userType!=11){
+    //     this.getforwardchart()
+    //     this.getActivity()
+    //     this.getbrowsechart()
+    //   }
 
 
-    }
+    // }
 
 
 
