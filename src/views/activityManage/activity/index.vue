@@ -74,10 +74,16 @@
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
+
     <el-table border v-loading="loading" :data="activityList" @selection-change="handleSelectionChange">
       <el-table-column label="活动名称" align="center" prop="activityName" width="180"/>
-      <el-table-column label="审核状态" align="center" prop="activityStatus" :formatter="activityStatusFormat"/>
-      <el-table-column label="创建人" align="center" prop="nickName" width="180"/>
+      <el-table-column label="组织类型" align="center" prop="organizationType" :formatter="organizationTypeFormat"/>
+      <el-table-column label="活动开始时间" align="center" prop="startTime" width="180"/>
+      <el-table-column label="活动结束时间" align="center" prop="endTime" width="180"/>
+      <el-table-column label="城市信息" align="center" prop="cityText" width="180"/>
+      <el-table-column label="组织名称" align="center" prop="organizationName" width="180"/>
+      <el-table-column label="战区名称" align="center" prop="regionName" width="180"/>
+      <el-table-column label="战队名称" align="center" prop="teamName" width="180"/>
       <el-table-column label="操作" align="left" class-name="small-padding fixed-width" width="320">
         <template slot-scope="scope">
 
@@ -85,8 +91,7 @@
             size="mini"
             type="text"
             icon="el-icon-edit"
-            @click="handleBase(scope.row)"
-            v-hasPermi="['activityManage:activity:basicsConfig']"
+            @click="handleGoods(scope.row)"
           >发布商品</el-button>
 
           <el-button
@@ -94,7 +99,6 @@
             type="text"
             icon="el-icon-edit"
             @click="handleSecKillConfig(scope.row)"
-            v-hasPermi="['activityManage:activity:onlineGoodConfig']"
           >奖励豆阶段设置</el-button>
 
 
@@ -102,16 +106,14 @@
             size="mini"
             type="text"
             icon="el-icon-edit"
-            @click="handleSecKillSort(scope.row)"
-            v-hasPermi="['activityManage:activity:onlineGoodSort']"
+            @click="handleSellCard(scope.row)"
           >售卡设置</el-button>
 
           <el-button
             size="mini"
             type="text"
             icon="el-icon-edit"
-            @click="handleSellCard(scope.row)"
-            v-hasPermi="['activityManage:activity:sellCardsConfig']"
+            @click="handleLieBian(scope.row)"
           >裂变配置</el-button>
 
 
@@ -119,8 +121,7 @@
             size="mini"
             type="text"
             icon="el-icon-edit"
-            @click="handleSort(scope.row)"
-            v-hasPermi="['activityManage:activity:onlineBrandSort']"
+            @click="handleDataConfig(scope.row)"
           >数据配置</el-button>
 
 
@@ -129,8 +130,7 @@
             size="mini"
             type="text"
             icon="el-icon-edit"
-            @click="handleDataConfig(scope.row)"
-            v-hasPermi="['activityManage:activity:dataConfig']"
+            @click="handleBase(scope.row)"
           >基础配置</el-button>
 
 
@@ -138,8 +138,7 @@
             size="mini"
             type="text"
             icon="el-icon-edit"
-            @click="handleRedSubmit(scope.row)"
-            v-hasPermi="['orderManage:activityRedEnvelopesRecharge:add']"
+            @click="handleBonusSubmit(scope.row)"
           >奖励豆配置</el-button>
 
 
@@ -147,8 +146,7 @@
             size="mini"
             type="text"
             icon="el-icon-edit"
-            @click="handleResetLink(scope.row)"
-            v-hasPermi="['activityManage:activity:resetLink']"
+            @click="handleLieBianCode(scope.row)"
           >裂变充值</el-button>
 
 
@@ -158,8 +156,7 @@
             size="mini"
             type="text"
             icon="el-icon-edit"
-            @click="handleLiveConfig(scope.row)"
-            v-hasPermi="['activityManage:activity:liveRedConfig']"
+            @click="handleBeansCode(scope.row)"
           >奖励豆充值</el-button>
 
 
@@ -167,8 +164,7 @@
             size="mini"
             type="text"
             icon="el-icon-edit"
-            @click="handleLiveCharge(scope.row)"
-            v-hasPermi="['activityManage:activity:liveRedRecharge']"
+            @click="handleMessageCode(scope.row)"
           >短信充值</el-button>
 
 
@@ -178,7 +174,6 @@
             type="text"
             icon="el-icon-edit"
             @click="handleDaiKan(scope.row)"
-            v-hasPermi="['activityManage:activity:takeWatchConfig']"
           >活动二维码</el-button>
 
 
@@ -186,8 +181,7 @@
             size="mini"
             type="text"
             icon="el-icon-edit"
-            @click="handleDaikeCharge(scope.row)"
-            v-hasPermi="['orderManage:activityTakeWatchRecharge:add']"
+            @click="handlePrize(scope.row)"
           >奖品管理</el-button>
 
 
@@ -195,8 +189,7 @@
             size="mini"
             type="text"
             icon="el-icon-edit"
-            @click="handleFenak(scope.row)"
-            v-hasPermi="['activityManage:activity:dcorecardConfig']"
+            @click="handleComposeType(scope.row)"
           >排版管理</el-button>
 
 
@@ -204,8 +197,7 @@
             size="mini"
             type="text"
             icon="el-icon-edit"
-            @click="handleOpenQrcode(scope.row)"
-            v-hasPermi="['activityManage:activity:query']"
+            @click="handleactivitySpecial(scope.row)"
           >专场管理</el-button>
 
           <el-button
@@ -213,7 +205,6 @@
             type="text"
             icon="el-icon-edit"
             @click="handleOpenLiveQrcode(scope.row)"
-            v-hasPermi="['activityManage:activity:query']"
           >种草视频</el-button>
 
 
@@ -251,27 +242,165 @@
 
 
 
+    <!-- 售卡配置 -->
+    <el-dialog :title="title" :visible.sync="openSellCardConfig" width="600px" append-to-body fixed-width>
+
+      <el-form :model="baseForm"  label-width="100px">
+        <el-form-item label="活动名称" prop="activityId" style="width: 100%;">
+          <el-select v-model="baseForm.activityId" placeholder="请选择" clearable style="width: 80%;">
+            <el-option v-for="(item, index) in activityList" :key="item.activityId" :label="item.activityName" :value="item.activityId"/>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="售卡费用类型" prop="isOpengSellCard" style="width: 100%;">
+          <el-select v-model="baseForm.isOpengSellCard" placeholder="请选择" clearable style="width: 80%;">
+            <el-option v-for="(item, index) in sellCardCostTypeList" :key="item.dictValue" :label="item.dictLabel" :value="item.dictValue"/>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="售卡金额" prop="cardAmount" style="width: 84%;" v-if="baseForm.isOpengSellCard==1">
+          <el-input v-model="baseForm.cardAmount" placeholder="请输入" />
+        </el-form-item>
+        <el-form-item label="是否开启售卡验证码" prop="isOpenSellCardCode" style="width: 100%;">
+          <el-select v-model="baseForm.isOpenSellCardCode" placeholder="请选择" clearable style="width: 80%;">
+            <el-option v-for="(item, index) in isOpenSellCardCodeList" :key="item.dictValue" :label="item.dictLabel" :value="item.dictValue"/>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="售卡提成" prop="cardSalesCommission" style="width: 84%;">
+          <el-input v-model="baseForm.cardSalesCommission" placeholder="请输入" />
+        </el-form-item>
+
+      </el-form>
+
+
+       <div slot="footer" class="dialog-footer">
+         <el-button type="primary" @click="SellCardConfigSubmit">确 定</el-button>
+         <el-button @click="cancelSellCardConfig">取 消</el-button>
+       </div>
+
+    </el-dialog>
+
+
+
+
+    <!-- 裂变配置 -->
+    <el-dialog :title="title" :visible.sync="openLieBianConfig" width="600px" append-to-body fixed-width>
+
+      <el-form :model="baseForm"  label-width="100px">
+        <el-form-item label="活动名称" prop="activityId" style="width: 100%;">
+          <el-select v-model="baseForm.activityId" placeholder="请选择" clearable style="width: 80%;">
+            <el-option v-for="(item, index) in activityList" :key="item.activityId" :label="item.activityName" :value="item.activityId"/>
+          </el-select>
+        </el-form-item>
+       <el-form-item label="浏览奖励" prop="browsePrice" style="width: 84%;">
+         <el-input v-model="baseForm.browsePrice"  placeholder="请输入"/>
+       </el-form-item>
+       <el-form-item label="浏览积分" prop="browseIntegral" style="width: 84%;">
+         <el-input v-model="baseForm.browseIntegral"  placeholder="请输入"/>
+       </el-form-item>
+       <el-form-item label="一次裂变奖励" prop="firstFissionPrice" style="width: 84%;">
+         <el-input v-model="baseForm.firstFissionPrice"  placeholder="请输入"/>
+       </el-form-item>
+       <el-form-item label="二次裂变奖励" prop="secondFissionPrice" style="width: 84%;">
+         <el-input v-model="baseForm.secondFissionPrice" placeholder="请输入" />
+       </el-form-item>
+       <el-form-item label="一次裂变积分" prop="firstFissionIntegral" style="width: 84%;">
+         <el-input v-model="baseForm.firstFissionIntegral" placeholder="请输入" />
+       </el-form-item>
+       <el-form-item label="二次裂变积分" prop="secondFissionIntegral" style="width: 84%;">
+         <el-input v-model="baseForm.secondFissionIntegral" placeholder="请输入" />
+         </el-form-item>
+
+      </el-form>
+
+
+       <div slot="footer" class="dialog-footer">
+         <el-button type="primary" @click="LieBianSubmit">确 定</el-button>
+         <el-button @click="cancelLieBian">取 消</el-button>
+       </div>
+
+    </el-dialog>
+
+
+    <!-- 基础配置 -->
+    <el-dialog :title="title" :visible.sync="openBase" width="700px" append-to-body fixed-width>
+
+      <el-form :model="baseForm"  label-width="160px">
+        <el-form-item label="活动名称" prop="activityId" >
+          <el-select v-model="baseForm.activityId" placeholder="请选择" clearable style="width: 79%;">
+            <el-option v-for="(item, index) in activityList" :key="item.activityId" :label="item.activityName" :value="item.activityId"/>
+          </el-select>
+        </el-form-item>
+       <el-form-item label="规则说明" prop="ruleDesc" style="width: 84%;">
+         <el-input v-model="baseForm.ruleDesc"  placeholder="请输入" :rows="4" type="textarea"/>
+       </el-form-item>
+       <el-form-item label="合作图片" prop="imgUrl" class="require">
+        <imgUpload ref="imageupload" v-model="imgList" ></imgUpload>
+       </el-form-item>
+       <el-form-item label="服务图片" prop="imgUrl" class="require">
+        <imgUpload ref="imageupload2" v-model="imgList2" ></imgUpload>
+       </el-form-item>
+
+       <el-form-item label="主体颜色" prop="subjectColour" style="width: 84%;">
+         <el-input v-model="baseForm.subjectColour"  placeholder="请输入"/>
+       </el-form-item>
+      <el-form-item label="裂变浏览提成费用" prop="directAccount" >
+        <el-select v-model="baseForm.directAccount" placeholder="请选择" clearable style="width: 79%;">
+          <el-option v-for="(item, index) in directAccountList" :key="item.dictValue" :label="item.dictLabel" :value="item.dictValue"/>
+        </el-select>
+      </el-form-item>
+       <el-form-item label="每日提现申请次数" prop="dayDirectNum" style="width: 84%;">
+         <el-input v-model="baseForm.dayDirectNum" placeholder="请输入" />
+       </el-form-item>
+       <el-form-item label="每次最大提现金额" prop="dayDirectMaxPrice" style="width: 84%;">
+         <el-input v-model="baseForm.dayDirectMaxPrice" placeholder="请输入" />
+       </el-form-item>
+      </el-form>
+
+
+       <div slot="footer" class="dialog-footer">
+         <el-button type="primary" @click="baseSubmit">确 定</el-button>
+         <el-button @click="cancelbaseSubmit">取 消</el-button>
+       </div>
+
+    </el-dialog>
+
+
+
+
     <!--数据配置弹窗 -->
        <el-dialog :title="title" :visible.sync="openDataConfig" width="600px" append-to-body fixed-width>
 
          <el-form :model="baseForm"  label-width="120px">
-           <el-form-item label="起始浏览量" prop="ficBrowseCount" style="width: 84%;">
+           <el-form-item label="活动名称" prop="activityId" style="width: 100%;">
+             <el-select v-model="baseForm.activityId" placeholder="请选择" clearable style="width: 80%;">
+               <el-option v-for="(item, index) in activityList" :key="item.activityId" :label="item.activityName" :value="item.activityId"/>
+             </el-select>
+           </el-form-item>
+           <el-form-item label="浏览量" prop="browseCount" style="width: 84%;">
+             <el-input v-model="baseForm.browseCount"  placeholder="请输入"/>
+           </el-form-item>
+           <el-form-item label="报名量" prop="enrollCount" style="width: 84%;">
+             <el-input v-model="baseForm.enrollCount"  placeholder="请输入"/>
+           </el-form-item>
+           <el-form-item label="分享量" prop="shareCount" style="width: 84%;">
+             <el-input v-model="baseForm.shareCount"  placeholder="请输入"/>
+           </el-form-item>
+           <el-form-item label="虚拟浏览量" prop="ficBrowseCount" style="width: 84%;">
              <el-input v-model="baseForm.ficBrowseCount"  placeholder="请输入"/>
            </el-form-item>
-           <el-form-item label="起始报名量" prop="ficEnrollCount" style="width: 84%;">
+           <el-form-item label="虚拟报名量" prop="ficEnrollCount" style="width: 84%;">
              <el-input v-model="baseForm.ficEnrollCount"  placeholder="请输入"/>
            </el-form-item>
-           <el-form-item label="起始分享量" prop="ficShareCount" style="width: 84%;">
+           <el-form-item label="虚拟分享量" prop="ficShareCount" style="width: 84%;">
              <el-input v-model="baseForm.ficShareCount"  placeholder="请输入"/>
            </el-form-item>
-           <el-form-item label="每日虚拟浏览量" prop="daysFicBrowseCount" style="width: 84%;">
-             <el-input v-model="baseForm.daysFicBrowseCount" placeholder="请输入" />
+           <el-form-item label="每日虚拟浏览量" prop="aysFicBrowseCount" style="width: 84%;">
+             <el-input v-model="baseForm.aysFicBrowseCount" placeholder="请输入" />
            </el-form-item>
            <el-form-item label="每日虚拟报名量" prop="daysFicEnrollCount" style="width: 84%;">
              <el-input v-model="baseForm.daysFicEnrollCount" placeholder="请输入" />
            </el-form-item>
-           <el-form-item label="每日虚拟分享量" prop="daysFicShareCount" style="width: 84%;">
-             <el-input v-model="baseForm.daysFicShareCount" placeholder="请输入" />
+           <el-form-item label="每日虚拟分享量" prop="aysFicShareCount" style="width: 84%;">
+             <el-input v-model="baseForm.aysFicShareCount" placeholder="请输入" />
            </el-form-item>
 
 
@@ -285,6 +414,654 @@
 
        </el-dialog>
 
+
+    <!-- 奖励豆配置 -->
+    <el-dialog :title="title" :visible.sync="openbonusbeansConfig" width="600px" append-to-body fixed-width>
+      <el-form :model="baseForm"  label-width="180px">
+        <el-form-item label="活动名称" prop="activityId" style="width: 100%;">
+          <el-select v-model="baseForm.activityId" placeholder="请选择" clearable style="width: 76%;">
+            <el-option v-for="(item, index) in activityList" :key="item.activityId" :label="item.activityName" :value="item.activityId"/>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="浏览一次奖励豆数量" prop="browseBeans" style="width: 84%;">
+          <el-input v-model="baseForm.browseBeans"  placeholder="请输入"/>
+        </el-form-item>
+        <el-form-item label="裂变一次奖励豆数量" prop="fissionBeans" style="width: 84%;">
+          <el-input v-model="baseForm.fissionBeans"  placeholder="请输入"/>
+        </el-form-item>
+        <el-form-item label="报名一次奖励豆数量" prop="enrollBeans" style="width: 84%;">
+          <el-input v-model="baseForm.enrollBeans"  placeholder="请输入"/>
+        </el-form-item>
+        <el-form-item label="售卡一次奖励豆数量" prop="cardBeans" style="width: 84%;">
+          <el-input v-model="baseForm.cardBeans"  placeholder="请输入"/>
+        </el-form-item>
+        <el-form-item label="闪购一次奖励豆数量" prop="flashPurchaseBeans" style="width: 84%;">
+          <el-input v-model="baseForm.flashPurchaseBeans"  placeholder="请输入"/>
+        </el-form-item>
+        <el-form-item label="拼团一次奖励豆数量" prop="groupBeans" style="width: 84%;">
+          <el-input v-model="baseForm.groupBeans"  placeholder="请输入"/>
+        </el-form-item>
+        <el-form-item label="预售产品一次奖励豆数量" prop="preSoldBeans" style="width: 84%;">
+          <el-input v-model="baseForm.preSoldBeans" placeholder="请输入" />
+        </el-form-item>
+        <el-form-item label="线下签单一次奖励豆数量" prop="offlineOrderBeans" style="width: 84%;">
+          <el-input v-model="baseForm.offlineOrderBeans" placeholder="请输入" />
+        </el-form-item>
+      </el-form>
+
+
+       <div slot="footer" class="dialog-footer">
+         <el-button type="primary" @click="bonusbeansSubmit">确 定</el-button>
+         <el-button @click="cancelbonusbeans">取 消</el-button>
+       </div>
+
+    </el-dialog>
+
+
+
+
+
+    <!-- 裂变充值配置 -->
+    <el-dialog :title="title" :visible.sync="openCode1" width="500px" append-to-body fixed-width>
+
+      <el-form :model="baseForm"  label-width="100px">
+        <el-form-item label="活动名称" prop="activityId" >
+          <el-select v-model="baseForm.activityId" placeholder="请选择" clearable style="width: 80%;">
+            <el-option v-for="(item, index) in activityList" :key="item.activityId" :label="item.activityName" :value="item.activityId"/>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="充值金额" prop="amount" style="width: 84%;">
+          <el-input v-model="baseForm.amount"  placeholder="请输入" />
+        </el-form-item>
+       <el-form-item label="备注" prop="rechargeRemarks" style="width: 84%;">
+         <el-input v-model="baseForm.rechargeRemarks"  placeholder="请输入" :rows="4" type="textarea"/>
+       </el-form-item>
+      </el-form>
+
+       <div slot="footer" class="dialog-footer">
+         <el-button type="primary" @click="code1Submit">确 定</el-button>
+         <el-button @click="cancelcode1">取 消</el-button>
+       </div>
+
+    </el-dialog>
+
+
+    <!-- 奖励豆充值配置 -->
+    <el-dialog :title="title" :visible.sync="openCode2" width="500px" append-to-body fixed-width>
+
+      <el-form :model="baseForm"  label-width="100px">
+        <el-form-item label="活动名称" prop="activityId" >
+          <el-select v-model="baseForm.activityId" placeholder="请选择" clearable style="width: 80%;">
+            <el-option v-for="(item, index) in activityList" :key="item.activityId" :label="item.activityName" :value="item.activityId"/>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="充值金额" prop="amount" style="width: 84%;">
+          <el-input v-model="baseForm.amount"  placeholder="请输入" />
+        </el-form-item>
+       <el-form-item label="备注" prop="rechargeRemarks" style="width: 84%;">
+         <el-input v-model="baseForm.rechargeRemarks"  placeholder="请输入" :rows="4" type="textarea"/>
+       </el-form-item>
+      </el-form>
+
+       <div slot="footer" class="dialog-footer">
+         <el-button type="primary" @click="code2Submit">确 定</el-button>
+         <el-button @click="cancelcode2">取 消</el-button>
+       </div>
+
+    </el-dialog>
+
+
+
+    <!-- 短信充值配置 -->
+    <el-dialog :title="title" :visible.sync="openCode3" width="500px" append-to-body fixed-width>
+
+      <el-form :model="baseForm"  label-width="100px">
+        <el-form-item label="活动名称" prop="activityId" >
+          <el-select v-model="baseForm.activityId" placeholder="请选择" clearable style="width: 80%;">
+            <el-option v-for="(item, index) in activityList" :key="item.activityId" :label="item.activityName" :value="item.activityId"/>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="充值金额" prop="amount" style="width: 84%;">
+          <el-input v-model="baseForm.amount"  placeholder="请输入" />
+        </el-form-item>
+       <el-form-item label="备注" prop="rechargeRemarks" style="width: 84%;">
+         <el-input v-model="baseForm.rechargeRemarks"  placeholder="请输入" :rows="4" type="textarea"/>
+       </el-form-item>
+      </el-form>
+
+       <div slot="footer" class="dialog-footer">
+         <el-button type="primary" @click="code3Submit">确 定</el-button>
+         <el-button @click="cancelcode3">取 消</el-button>
+       </div>
+
+    </el-dialog>
+
+
+
+
+
+   <!-- 商品列表 -->
+   <el-dialog :title="title" :visible.sync="openGoods" width="1000px" append-to-body fixed-width>
+
+     <el-row :gutter="10" class="mb8">
+       <el-col :span="1.5">
+         <el-button
+           type="primary"
+           plain
+           icon="el-icon-plus"
+           size="mini"
+           @click="handleactivityGoodsAdd"
+         >新增</el-button>
+       </el-col>
+     </el-row>
+
+      <el-table border v-loading="loading" :data="activityGoodsList">
+        <el-table-column label="活动名称" align="center" prop="activityName"width="180"/>
+        <el-table-column label="门店名称" align="center" prop="storeName"width="180"/>
+        <el-table-column label="商品名称" align="center" prop="goodsName" width="180"/>
+        <el-table-column label="商品图片" align="center" width="120">
+          <template slot-scope="scope">
+            <el-image
+                style="height: 40px"
+                 fit="contain"
+                :src="scope.row.goodsImg"
+                >
+              </el-image>
+          </template>
+        </el-table-column>
+        <el-table-column label="商品价格" align="center" prop="goodsPrice" />
+        <el-table-column label="商品类型" align="center" prop="goodsType" :formatter="goodsTypeFormat"/>
+        <el-table-column label="商品原价" align="center" prop="oldPrice" />
+        <el-table-column label="定金" align="center" prop="depositPrice"/>
+        <el-table-column label="商品排序" align="center" prop="sort"/>
+        <el-table-column label="商品销量" align="center" prop="sales"/>
+        <el-table-column label="商品库存" align="center" prop="stock"/>
+        <el-table-column label="虚假商品销量" align="center" prop="ficSales"/>
+        <el-table-column label="商品限购数量" align="center" prop="maxBuy"/>
+        <el-table-column label="商品点击量" align="center" prop="clicks"/>
+        <el-table-column label="购买所需分享量" align="center" prop="buyNeedShare"/>
+        <el-table-column label="商品规格" align="center" prop="goodsSpec"/>
+        <el-table-column label="商品描述" align="center" prop="goodsDesc" width="240"/>
+        <el-table-column label="商品秒杀提示" align="center" prop="goodsContent" width="200"/>
+        <el-table-column label="是否爆款" align="center" prop="hottype" :formatter="hottypeFormat"/>
+        <el-table-column label="单位" align="center" prop="unit" />
+        <el-table-column label="商品状态" align="center" prop="status" :formatter="goodsstatusFormat"/>
+        <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+          <template slot-scope="scope">
+            <el-button
+              size="mini"
+              type="text"
+              icon="el-icon-edit"
+              @click="handleactivityGoodsUpdate(scope.row)"
+            >编辑</el-button>
+            <el-button
+              size="mini"
+              type="text"
+              icon="el-icon-delete"
+              @click="handleactivityGoodsDelete(scope.row)"
+            >删除</el-button>
+            <el-button
+              size="mini"
+              type="text"
+              icon="el-icon-delete"
+              v-if="scope.row.status==0"
+              @click="handleactivityGoodsUp(scope.row)"
+            >上架</el-button>
+            <el-button
+              size="mini"
+              type="text"
+              icon="el-icon-delete"
+              v-if="scope.row.status==1"
+              @click="handleactivityGoodsDown(scope.row)"
+            >下架</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+
+      <pagination
+        v-show="total>0"
+        :total="total"
+        :page.sync="queryactivityGoodsParams.pageNum"
+        :limit.sync="queryactivityGoodsParams.pageSize"
+        @pagination="getactivityGoodsList"
+      />
+
+   </el-dialog>
+
+
+
+   <!-- 新增商品 -->
+   <el-dialog :title="title" :visible.sync="openactivityGoodsSubmit" width="600px" append-to-body fixed-width>
+
+        <el-form :model="baseForm"  label-width="140px">
+          <el-form-item label="活动名称" prop="activityId" >
+            <el-select v-model="baseForm.activityId" placeholder="请选择" clearable style="width: 80%;">
+              <el-option v-for="(item, index) in activityList" :key="item.activityId" :label="item.activityName" :value="item.activityId"/>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="门店名称" prop="storeId" >
+            <el-select v-model="baseForm.storeId" placeholder="请选择" clearable style="width: 80%;">
+              <el-option v-for="(item, index) in storeList" :key="item.storeId" :label="item.storeName" :value="item.storeId"/>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="商品名称" prop="goodsName" style="width: 84%;">
+            <el-input v-model="baseForm.goodsName"  placeholder="请输入"/>
+          </el-form-item>
+          <el-form-item label="商品价格" prop="goodsPrice" style="width: 84%;">
+            <el-input v-model="baseForm.goodsPrice"  placeholder="请输入"/>
+          </el-form-item>
+          <el-form-item label="商品类型" prop="goodsType" >
+            <el-select v-model="baseForm.goodsType" placeholder="请选择" clearable style="width: 80%;">
+              <el-option v-for="(item, index) in goodsTypeList" :key="item.dictValue" :label="item.dictLabel" :value="item.dictValue"/>
+            </el-select>
+          </el-form-item>
+
+         <el-form-item label="商品原价" prop="oldPrice" style="width: 84%;">
+           <el-input v-model="baseForm.oldPrice" placeholder="请输入" />
+         </el-form-item>
+          <el-form-item label="定金" prop="depositPrice" style="width: 84%;">
+            <el-input v-model="baseForm.depositPrice"  placeholder="请输入"/>
+          </el-form-item>
+          <el-form-item label="商品图片" prop="goodsImg" class="require">
+           <imgUpload ref="imageupload5" v-model="imgList5" ></imgUpload>
+          </el-form-item>
+
+          <el-form-item label="商品排序" prop="sort" style="width: 84%;">
+            <el-input v-model="baseForm.sort"  placeholder="请输入"/>
+          </el-form-item>
+
+          <el-form-item label="商品销量" prop="sales" style="width: 84%;">
+            <el-input v-model="baseForm.sales"  placeholder="请输入"/>
+          </el-form-item>
+
+          <el-form-item label="商品库存" prop="stock" style="width: 84%;">
+            <el-input v-model="baseForm.stock"  placeholder="请输入"/>
+          </el-form-item>
+
+          <el-form-item label="虚假商品销量" prop="ficSales" style="width: 84%;">
+            <el-input v-model="baseForm.ficSales"  placeholder="请输入"/>
+          </el-form-item>
+
+          <el-form-item label="商品限购数量" prop="maxBuy" style="width: 84%;">
+            <el-input v-model="baseForm.maxBuy"  placeholder="请输入"/>
+          </el-form-item>
+
+          <el-form-item label="商品点击量" prop="clicks" style="width: 84%;">
+            <el-input v-model="baseForm.clicks"  placeholder="请输入"/>
+          </el-form-item>
+
+          <el-form-item label="购买所需分享量" prop="buyNeedShare" style="width: 84%;">
+            <el-input v-model="baseForm.buyNeedShare"  placeholder="请输入"/>
+          </el-form-item>
+
+          <el-form-item label="商品规格" prop="goodsSpec" style="width: 84%;">
+            <el-input v-model="baseForm.goodsSpec"  placeholder="请输入"/>
+          </el-form-item>
+
+          <el-form-item label="商品描述" prop="goodsDesc" style="width: 84%;">
+            <el-input v-model="baseForm.goodsDesc" placeholder="请输入"  type="textarea":rows="2"/>
+          </el-form-item>
+
+
+          <el-form-item label="商品秒杀提示" prop="goodsContent" style="width: 84%;">
+            <el-input v-model="baseForm.goodsContent"  placeholder="请输入"/>
+          </el-form-item>
+
+          <el-form-item label="是否爆款" prop="hottype" >
+            <el-select v-model="baseForm.hottype" placeholder="请选择" clearable style="width: 80%;">
+              <el-option v-for="(item, index) in hottypeList" :key="item.dictValue" :label="item.dictLabel" :value="item.dictValue"/>
+            </el-select>
+          </el-form-item>
+
+          <el-form-item label="单位" prop="unit" style="width: 84%;">
+            <el-input v-model="baseForm.unit"  placeholder="请输入"/>
+          </el-form-item>
+
+          <el-form-item label="商品状态" prop="status" >
+            <el-select v-model="baseForm.status" placeholder="请选择" clearable style="width: 80%;">
+              <el-option v-for="(item, index) in goodsstatusList" :key="item.dictValue" :label="item.dictLabel" :value="item.dictValue"/>
+            </el-select>
+          </el-form-item>
+
+
+        </el-form>
+
+
+         <div slot="footer" class="dialog-footer">
+           <el-button type="primary" @click="activityGoodsSubmit">确 定</el-button>
+           <el-button @click="cancelactivityGoodsSubmit">取 消</el-button>
+         </div>
+
+      </el-dialog>
+
+
+
+
+
+
+
+
+
+
+
+    <!-- 奖品管理 -->
+    <el-dialog :title="title" :visible.sync="openPrizeGoods" width="1000px" append-to-body fixed-width>
+
+      <el-row :gutter="10" class="mb8">
+        <el-col :span="1.5">
+          <el-button
+            type="primary"
+            plain
+            icon="el-icon-plus"
+            size="mini"
+            @click="handleprizeGoodsAdd"
+          >新增</el-button>
+        </el-col>
+      </el-row>
+
+       <el-table border v-loading="loading" :data="prizeGoodsList">
+         <el-table-column label="排序" align="center" prop="sort"/>
+         <el-table-column label="奖品名称" align="center" prop="prizeName" width="180"/>
+         <el-table-column label="奖品图片" align="center" width="120">
+           <template slot-scope="scope">
+             <el-image
+                 style="height: 40px"
+                  fit="contain"
+                 :src="scope.row.prizeImgFull"
+                 >
+               </el-image>
+           </template>
+         </el-table-column>
+         <el-table-column label="奖品剩余数量" align="center" prop="prizeSurplusNumber" />
+         <el-table-column label="奖品抽中数量" align="center" prop="prizeSaleNumber" />
+         <el-table-column label="奖品描述" align="center" prop="prizeName" width="180"/>
+         <el-table-column label="奖品中奖概率" align="center" prop="prizeProbability"/>
+         <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+           <template slot-scope="scope">
+             <el-button
+               size="mini"
+               type="text"
+               icon="el-icon-edit"
+               @click="handleprizeUpdate(scope.row)"
+             >编辑</el-button>
+             <el-button
+               size="mini"
+               type="text"
+               icon="el-icon-delete"
+               @click="handleprizeDelete(scope.row)"
+             >删除</el-button>
+           </template>
+         </el-table-column>
+       </el-table>
+
+       <pagination
+         v-show="total>0"
+         :total="total"
+         :page.sync="queryPrizeGoodsParams.pageNum"
+         :limit.sync="queryPrizeGoodsParams.pageSize"
+         @pagination="getPrizeGoodsList"
+       />
+
+    </el-dialog>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- 新增奖品 -->
+    <el-dialog :title="title" :visible.sync="openPrizeGoodsSubmit" width="600px" append-to-body fixed-width>
+
+         <el-form :model="baseForm"  label-width="140px">
+           <el-form-item label="活动名称" prop="activityId" >
+             <el-select v-model="baseForm.activityId" placeholder="请选择" clearable style="width: 80%;">
+               <el-option v-for="(item, index) in activityList" :key="item.activityId" :label="item.activityName" :value="item.activityId"/>
+             </el-select>
+           </el-form-item>
+           <el-form-item label="排序" prop="sort" style="width: 84%;">
+             <el-input v-model="baseForm.sort"  />
+           </el-form-item>
+           <el-form-item label="奖品名称" prop="prizeName" style="width: 84%;">
+             <el-input v-model="baseForm.prizeName"  />
+           </el-form-item>
+          <el-form-item label="奖品描述" prop="prizeDesc" style="width: 84%;">
+            <el-input v-model="baseForm.prizeDesc"  type="textarea":rows="2"/>
+          </el-form-item>
+          <el-form-item label="奖品中奖概率" prop="prizeProbability" style="width: 84%;">
+            <el-input v-model="baseForm.prizeProbability"  />
+          </el-form-item>
+           <el-form-item label="库存" prop="prizeSurplusNumber" style="width: 84%;">
+             <el-input v-model="baseForm.prizeSurplusNumber"  />
+           </el-form-item>
+           <el-form-item label="奖品图片" prop="prizeImg" class="require">
+            <imgUpload ref="imageupload3" v-model="imgList3" ></imgUpload>
+           </el-form-item>
+
+         </el-form>
+
+
+          <div slot="footer" class="dialog-footer">
+            <el-button type="primary" @click="PrizeGoodsSubmit">确 定</el-button>
+            <el-button @click="cancelPrizeGoodsSubmit">取 消</el-button>
+          </div>
+
+       </el-dialog>
+
+
+
+
+
+     <!-- 排版管理 -->
+    <el-dialog :title="title" :visible.sync="openactivityComposeType" width="700px" append-to-body fixed-width>
+     <el-table border v-loading="loading" :data="activityComposeTypeList">
+       <el-table-column label="类型" align="center" prop="composeType" :formatter="composeTypeFormat"/>
+       <el-table-column label="是否开启" align="center" prop="isOpen" >
+        <template slot-scope="scope">
+          <el-switch
+            v-model="scope.row.isOpen"
+            :active-value="1"
+            :inactive-value="0"
+            @change="handleisOpenChange(scope.row)"
+          ></el-switch>
+        </template>
+        </el-table-column>
+       <el-table-column label="排序" align="center" prop="sort" >
+          <template slot-scope="scope">
+            <el-input v-model="scope.row.sort" class="my-input" @change="handlesortChange(scope.row)"/>
+          </template>
+         </el-table-column>
+       <el-table-column label="结束时间" align="center" prop="endTime" width="180" />
+       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+         <template slot-scope="scope">
+           <el-button
+             size="mini"
+             type="text"
+             icon="el-icon-edit"
+             @click="handleactivityComposeTypeUpdate(scope.row)"
+           >编辑</el-button>
+         </template>
+       </el-table-column>
+     </el-table>
+
+     <pagination
+       v-show="total>0"
+       :total="total"
+       :page.sync="queryactivityComposeTypeParams.pageNum"
+       :limit.sync="queryactivityComposeTypeParams.pageSize"
+       @pagination="getactivityComposeTypeList"
+     />
+
+    </el-dialog>
+
+
+    <!-- 修改排版 -->
+    <el-dialog :title="title" :visible.sync="openEditComposeType" width="500px" append-to-body fixed-width>
+      <el-form :model="baseForm"  label-width="100px">
+        <el-form-item label="活动名称" prop="activityId" >
+          <el-select v-model="baseForm.activityId" placeholder="请选择" clearable style="width: 80%;">
+            <el-option v-for="(item, index) in activityList" :key="item.activityId" :label="item.activityName" :value="item.activityId"/>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="类型" prop="composeType" >
+          <el-select v-model="baseForm.composeType" placeholder="请选择" clearable style="width: 80%;" disabled>
+            <el-option v-for="(item, index) in composeTypeList" :key="item.dictValue" :label="item.dictLabel" :value="item.dictValue"/>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="是否开启" prop="isOpen" >
+          <el-select v-model="baseForm.isOpen" placeholder="请选择" clearable style="width: 80%;">
+            <el-option v-for="(item, index) in isOpenList" :key="item.dictValue" :label="item.dictLabel" :value="item.dictValue"/>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="排序" prop="sort" style="width: 84%;">
+          <el-input v-model="baseForm.sort"  placeholder="请输入" />
+        </el-form-item>
+      <el-form-item label="结束时间" prop="endTime" >
+        <el-date-picker clearable size="small"
+         style="width: 80%;"
+          v-model="baseForm.endTime"
+          type="date"
+          value-format="yyyy-MM-dd"
+          placeholder="请选择">
+        </el-date-picker>
+      </el-form-item>
+      </el-form>
+
+       <div slot="footer" class="dialog-footer">
+         <el-button type="primary" @click="EditComposeTypeSubmit">确 定</el-button>
+         <el-button @click="cancelEditComposeType">取 消</el-button>
+       </div>
+
+    </el-dialog>
+
+
+
+    <!-- 专场列表 -->
+    <el-dialog :title="title" :visible.sync="openactivitySpecial" width="1000px" append-to-body fixed-width>
+
+      <el-row :gutter="10" class="mb8">
+        <el-col :span="1.5">
+          <el-button
+            type="primary"
+            plain
+            icon="el-icon-plus"
+            size="mini"
+            @click="handleactivitySpecialAdd"
+          >新增</el-button>
+        </el-col>
+      </el-row>
+
+     <el-table border v-loading="loading" :data="activitySpecialList">
+       <el-form-item label="活动名称" prop="activityId" >
+         <el-select v-model="baseForm.activityId" placeholder="请选择" clearable style="width: 80%;">
+           <el-option v-for="(item, index) in activityList" :key="item.activityId" :label="item.activityName" :value="item.activityId"/>
+         </el-select>
+       </el-form-item>
+       <el-table-column label="专场名称" align="center" prop="specialName" width="180"/>
+       <el-table-column label="封面图片" align="center" width="120">
+         <template slot-scope="scope">
+           <el-image
+               style="height: 40px"
+                fit="contain"
+               :src="scope.row.specialImgUrlFull"
+               >
+             </el-image>
+         </template>
+       </el-table-column>
+       <el-table-column label="密码" align="center" prop="passwordStr" width="180"/>
+       <el-table-column label="排序" align="center" prop="sort"  />
+       <el-table-column label="结束时间" align="center" prop="endTime" width="180" />
+       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+         <template slot-scope="scope">
+           <el-button
+             size="mini"
+             type="text"
+             icon="el-icon-edit"
+             @click="handleactivitySpecialUpdate(scope.row)"
+           >编辑</el-button>
+           <el-button
+             size="mini"
+             type="text"
+             icon="el-icon-edit"
+             @click="handleactivitySpecialDelete(scope.row)"
+           >删除</el-button>
+         </template>
+       </el-table-column>
+     </el-table>
+
+     <pagination
+       v-show="total>0"
+       :total="total"
+       :page.sync="queryactivitySpecialParams.pageNum"
+       :limit.sync="queryactivitySpecialParams.pageSize"
+       @pagination="getactivitySpecialList"
+     />
+
+    </el-dialog>
+
+
+
+    <!-- 新增专场 -->
+    <el-dialog :title="title" :visible.sync="openactivitySpecialSubmit" width="800px" append-to-body fixed-width>
+
+         <el-form :model="baseForm"  label-width="140px">
+           <el-form-item label="活动名称" prop="activityId" >
+             <el-select v-model="baseForm.activityId" placeholder="请选择" clearable style="width: 80%;">
+               <el-option v-for="(item, index) in activityList" :key="item.activityId" :label="item.activityName" :value="item.activityId"/>
+             </el-select>
+           </el-form-item>
+           <el-form-item label="专场名称" prop="specialName" style="width: 84%;">
+             <el-input v-model="baseForm.specialName"  placeholder="请输入"/>
+           </el-form-item>
+           <el-form-item label="密码" prop="passwordStr" style="width: 84%;">
+             <el-input v-model="baseForm.passwordStr"  placeholder="请输入"/>
+           </el-form-item>
+          <el-form-item label="排序" prop="sort" style="width: 84%;">
+            <el-input v-model="baseForm.sort"  placeholder="请输入"/>
+          </el-form-item>
+
+          <el-form-item label="选择商品" prop="goodsIds">
+            <!-- <el-input v-model="form.brandId" placeholder="请输入品牌ID" /> -->
+            <el-transfer ref="myTransferData" class="my-transfer"  filterable filter-placeholder="请输入关键字搜索" :button-texts="['移出', '加入']"
+               v-model="goods" :titles="titles" :props="{
+                        key: 'goodId',
+                        label: 'goodName'
+                      }"
+              :data="goodList">
+            </el-transfer>
+          </el-form-item>
+
+
+           <el-form-item label="结束时间" prop="endTime" >
+             <el-date-picker clearable size="small"
+              style="width: 80%;"
+               v-model="baseForm.endTime"
+               type="date"
+               value-format="yyyy-MM-dd"
+               placeholder="请选择">
+             </el-date-picker>
+           </el-form-item>
+           <el-form-item label="封面图" prop="specialImgUrl" class="require">
+            <imgUpload ref="imageupload4" v-model="imgList4" ></imgUpload>
+           </el-form-item>
+
+         </el-form>
+
+
+          <div slot="footer" class="dialog-footer">
+            <el-button type="primary" @click="activitySpecialSubmit">确 定</el-button>
+            <el-button @click="cancelactivitySpecialSubmit">取 消</el-button>
+          </div>
+
+       </el-dialog>
 
 
 
@@ -562,7 +1339,12 @@
 </template>
 
 <script>
-import {listActivity,addActivity} from "@/api/activityManage/activity";
+import {updategoodsstatus,getActivitygoods,delactivitygoods,updateactivitygoods,addActivitygoods,listActivitygoods,listactivitySpecialgoods,delactivitySpecial,updateactivitySpecial,addactivitySpecial,listactivitySpecial,getactivityComposeType,updateactivityComposeTypestatus,updateactivityComposeTypesort,updateactivityComposeType,
+activityComposeTypeList,delPrizeGoods,updatePrizeGoods,getPrizeGoods,addPrizeGoods,prizeGoodsList,
+rechargeSubmit,bonusbeansSubmit,basicsSubmit,
+dataSubmit,fissionSubmit,cardsalesSubmit,listActivity,addActivity} from "@/api/activityManage/activity";
+
+import {liststore} from "@/api/basicManage/store";
 import imgUpload from '@/components/imgUpload'
 import { mapState} from "vuex";
 export default {
@@ -574,6 +1356,11 @@ export default {
     return {
       endDatePicker: this.processDate(),
       uploadUrl:this.UPLOADURL.BaseUrl+"/common/upload?type=10",
+
+
+
+
+
       stateList: [{
         "dictLabel": "审核通过",
         "dictValue": 1
@@ -744,6 +1531,16 @@ export default {
       ],
 
 
+      isOpengSellCardList:[
+        {
+          "dictLabel": "收",
+          "dictValue": 1
+        },
+        {
+          "dictLabel": "免费",
+          "dictValue": 2
+        }
+      ],
 
       isOpengSellCard: [{
         "dictLabel": "开启",
@@ -756,15 +1553,15 @@ export default {
       ],
 
 
-      // isOpengDaiKan: [{
-      //   "dictLabel": "开启",
-      //   "dictValue": 1
-      // },
-      // {
-      //   "dictLabel": "关闭",
-      //   "dictValue": -1
-      // }
-      // ],
+      directAccountList: [{
+        "dictLabel": "直接到账",
+        "dictValue": 1
+      },
+      {
+        "dictLabel": "自行提现",
+        "dictValue": 0
+      }
+      ],
 
 
 
@@ -865,24 +1662,20 @@ export default {
 
 
       organizationTypeList:[{
-         "dictLabel": "商场",
-         "dictValue": 1
-       }, {
-         "dictLabel": "联盟",
-         "dictValue": 2
-       },
-       {
-         "dictLabel": "第三方",
-         "dictValue": 3
-       },
-       {
-         "dictLabel": "经销商",
-         "dictValue": 4
-       },
-       {
-         "dictLabel": "品牌",
-         "dictValue": 5
-       }
+        "dictLabel": "工厂",
+        "dictValue": 1
+      }, {
+        "dictLabel": "战区",
+        "dictValue":11
+      },
+      {
+        "dictLabel": "战队",
+        "dictValue": 21
+      },
+      {
+        "dictLabel": "门店",
+        "dictValue": 31
+      }
       ],
 
       activityStatus:[{
@@ -909,16 +1702,20 @@ export default {
       groupListform:{},
       opengroupList:false,
       groupListactivityId:null,
-
-
+      openbonusbeansConfig:false,
+      openLieBianConfig:false,
       openguideConfig:false,
       guideConfigList:[],
       guideConfigform:{},
       guideConfigactivityId:null,
       selectGuide:[],
       selectGuideList:[],
-
-
+      activitySpecialList:[],
+      openactivitySpecial:false,
+      openGoods:false,
+      activityGoodsList:[],
+      storeList:[],
+      prizeGoodsList:[],
       imgListAd1:[],
       imgListAd2:[],
       imgListAd3:[],
@@ -1013,7 +1810,143 @@ export default {
       opensecConfig:false,
       openSellCardConfig:false,
       opensecConfig2:false,
+      openCode1:false,
+      openCode2:false,
+      openCode3:false,
+      openPrizeGoods:false,
+      openPrizeGoodsSubmit:false,
+      openactivityComposeType:false,
+      openEditComposeType:false,
+      openactivitySpecialSubmit:false,
+      openactivityGoodsSubmit:false,
+      activityComposeTypeList:[],
+
       redSubmitData:{},
+
+      queryPrizeGoodsParams:{
+        pageNum: 1,
+        pageSize: 10,
+      },
+
+      queryactivityComposeTypeParams:{
+        pageNum: 1,
+        pageSize: 10,
+      },
+
+      queryactivitySpecialParams:{
+        pageNum: 1,
+        pageSize: 10,
+      },
+
+      queryactivityGoodsParams:{
+        pageNum: 1,
+        pageSize: 10,
+      },
+
+
+      isOpenList:[
+        {
+           "dictLabel": "关闭",
+           "dictValue": 0
+         }, {
+           "dictLabel": "开启",
+           "dictValue": 1
+         }
+      ],
+
+      composeTypeList:[
+        {
+           "dictLabel": "闪购",
+           "dictValue": 1
+         }, {
+           "dictLabel": "拼团",
+           "dictValue": 2
+         },
+         {
+           "dictLabel": "抽奖",
+           "dictValue": 3
+         },
+         {
+           "dictLabel": "预售",
+           "dictValue": 4
+         },
+         {
+           "dictLabel": "积分商品",
+           "dictValue": 5
+         },
+         {
+           "dictLabel": "专场",
+           "dictValue": 6
+         },
+         {
+           "dictLabel": "种草视频",
+           "dictValue": 7
+         },
+         {
+           "dictLabel": "优惠券",
+           "dictValue": 8
+         },
+         {
+           "dictLabel": "详情图",
+           "dictValue": 9
+         },
+         {
+           "dictLabel": "最美门店",
+           "dictValue": 10
+         }
+      ],
+
+
+      hottypeList:[
+        {
+          "dictLabel": "非爆款",
+          "dictValue": 0
+        },
+        {
+          "dictLabel": "爆款",
+          "dictValue": 1
+        }
+      ],
+
+      goodsstatusList:[
+        {
+          "dictLabel": "下架",
+          "dictValue": 0
+        },
+        {
+          "dictLabel": "正常",
+          "dictValue": 1
+        }
+      ],
+
+      goodsTypeList:[
+        {
+           "dictLabel": "闪购",
+           "dictValue": 1
+         }, {
+           "dictLabel": "拼团",
+           "dictValue": 2
+         },
+         {
+           "dictLabel": "抽奖",
+           "dictValue": 3
+         },
+         {
+           "dictLabel": "预售",
+           "dictValue": 4
+         },
+         {
+           "dictLabel": "积分商品",
+           "dictValue": 5
+         },
+         {
+           "dictLabel": "专场",
+           "dictValue": 6
+         },
+      ],
+
+
+
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -1082,9 +2015,11 @@ export default {
     };
   },
   created() {
+    this.getStoreList();
     this.getList();
     this.getBrandList();
     this.getCityList();
+
     console.log(this.user)
     this.userName=this.user.name
     this.userType=localStorage.getItem("userType")
@@ -1096,6 +2031,7 @@ export default {
     ...mapState({
        user:state=>state.user
     })
+
    },
 
 
@@ -1140,6 +2076,27 @@ export default {
 
 
 
+    goodsTypeFormat(row, column) {
+      return this.selectDictLabel(this. goodsTypeList, row. goodsType);
+    },
+
+    hottypeFormat(row, column) {
+      return this.selectDictLabel(this.hottypeList, row.hottype);
+    },
+
+    goodsstatusFormat(row, column) {
+      return this.selectDictLabel(this.goodsstatusList, row.goodsstatus);
+    },
+
+
+    composeTypeFormat(row, column) {
+      return this.selectDictLabel(this.composeTypeList, row.composeType);
+    },
+
+    isOpenFormat(row, column) {
+      return this.selectDictLabel(this.isOpenList, row.isOpen);
+    },
+
     // 字典状态字典翻译
     organizationTypeFormat(row, column) {
       return this.selectDictLabel(this.organizationTypeList, row.organizationType);
@@ -1161,6 +2118,170 @@ export default {
     activityStatusFormat(row, column) {
      return this.selectDictLabel(this.activityStatus, row.activityStatus);
    },
+
+
+
+   getStoreList(){
+     liststore().then(response => {
+       this.storeList=response.rows
+     });
+   },
+
+
+
+
+  // 商品管理
+   handleGoods(row){
+     this.getactivityGoodsList(row.activityId)
+   },
+
+   getactivityGoodsList(id){
+     this.title="商品列表"
+     let data={
+       activityId:id
+     }
+     listActivitygoods(data).then(response => {
+       this.activityGoodsList=response.rows
+       this.total = response.total;
+       this.openGoods=true
+
+     });
+   },
+
+
+   // 新增商品
+   handleactivityGoodsAdd(){
+     this.imgList5=[]
+     this.baseForm = {
+           activityId:null,
+           storeId:null,
+           goodsName:null,
+           goodsPrice:null,
+           goodsType:null,
+           oldPrice:null,
+           depositPrice:null,
+           sort:null,
+           sales:null,
+           stock:null,
+           ficSales:null,
+           maxBuy:null,
+           clicks:null,
+           buyNeedShare:null,
+           goodsSpec:null,
+           goodsDesc:null,
+           goodsContent:null,
+           hottype:null,
+           unit:null,
+           status:null,
+      };
+
+     this.openactivityGoodsSubmit=true
+     this.title = "新增";
+   },
+
+
+   // 修改商品
+   handleactivityGoodsUpdate(row){
+     this.imgList5=[]
+     const id = row.id || this.ids
+     getActivitygoods(id).then(response => {
+       this.baseForm = response.data;
+       this.openactivityGoodsSubmit = true;
+       this.title = "修改商品";
+       let data2 = {
+           url: response.data.goodsImgFull,
+           relative_url: response.data.goodsImg
+         }
+       this.imgList5.push(data2)
+     });
+   },
+
+   // 删除商品
+   handleactivityGoodsDelete(row){
+     const ids = row.id || this.ids;
+     this.$confirm('是否确认删除?', "警告", {
+         confirmButtonText: "确定",
+         cancelButtonText: "取消",
+         type: "warning"
+       }).then(function() {
+         return delactivitygoods(ids);
+       }).then(() => {
+         this.getList();
+         this.msgSuccess("删除成功");
+       }).catch(() => {});
+   },
+
+
+   // 新增商品提交
+   activityGoodsSubmit(){
+     if(this.imgList5.length!=0){
+      this.baseForm.goodsImg= this.imgList5[0].relative_url
+     }
+     else{
+       this.baseForm.goodsImg= ''
+     }
+
+      if (this.baseForm.activityId != null) {
+       updateactivitygoods(this.baseForm).then(response => {
+       this.openactivityGoodsSubmit=false
+        this.msgSuccess("编辑成功");
+         this.getactivityGoodsList(this.baseForm.activityId)
+       });
+      }
+      else{
+        addActivitygoods(this.baseForm).then(response => {
+        this.openactivityGoodsSubmit=false
+         this.msgSuccess("新增成功");
+          this.getactivityGoodsList(this.baseForm.activityId)
+        });
+      }
+
+
+   },
+
+
+   cancelactivityGoodsSubmit(){
+     this.openactivityGoodsSubmit=false
+   },
+   
+   
+   
+   handleactivityGoodsUp(row){
+     const ids = row.id || this.ids;
+     this.$confirm('是否确认上架?', "警告", {
+         confirmButtonText: "确定",
+         cancelButtonText: "取消",
+         type: "warning"
+       }).then(function() {
+         let data={
+           goodsId:id,
+           status:1
+         }
+         return updategoodsstatus(ids);
+       }).then(() => {
+         this.getList();
+         this.msgSuccess("上架成功");
+       }).catch(() => {});
+   },
+   
+   handleactivityGoodsDown(row){
+     const ids = row.id || this.ids;
+     this.$confirm('是否确认下架?', "警告", {
+         confirmButtonText: "确定",
+         cancelButtonText: "取消",
+         type: "warning"
+       }).then(function() {
+         let data={
+           goodsId:id,
+           status:0
+         }
+         return updategoodsstatus(ids);
+       }).then(() => {
+         this.getList();
+         this.msgSuccess("下架成功");
+       }).catch(() => {});
+   },
+   
 
 
 
@@ -1316,148 +2437,246 @@ export default {
 
 
 
+   // 奖品管理
+   handlePrize(row){
+     this.getPrizeGoodsList(row.activityId)
+   },
 
+   getPrizeGoodsList(id){
+     this.title="奖品列表"
+     let data={
+       activityId:id
+     }
+     prizeGoodsList(data).then(response => {
+       this.prizeGoodsList=response.rows
+       this.total = response.total;
+       this.openPrizeGoods=true
 
-    // 报名配置
-    handleSellCard(row){
-      this.imgList8=[]
-      this.baseForm = {
-        activityImageUrl: null,
-        activityDetailsImageUrl: null,
-        posterBackgroundImageUrl: null,
-        musicUrl: null,
-        sharingFriend: null,
-        sharingImageUrl: null,
-        sharingTitle: null,
-        sharingDescribe: null,
-        customerServicePhone: null,
-        subjectColor: null,
-        redEnvelopesStatus: null,
-        startAmount: null,
-        endAmount: null,
-        receiveMode: null,
-        extensionStatus: null,
-        extensionPrice: null,
-        isOpenDelayed: null,
-        ficBrowseCount:null,
-        ficEnrollCount:null,
-        ficShareCount:null,
-        daysFicBrowseCount:null,
-        daysFicEnrollCount:null,
-        daysFicShareCount:null,
-        isOpengSellCard:null,
-        sellCardCostType:null,
-        isOpenSellCardCode:null,
-        enrollAddressType:null,
-        cardAmount:null,
-        userRoyalty:null,
-        userSubRoyalty:null,
-        extensionRoyalty:null,
-        choiceCode:null,
+     });
+   },
 
+   // 新增奖品
+   handleprizeGoodsAdd(){
+     this.imgList3=[]
+     this.baseForm = {
+           activityId:null,
+           prizeName:null,
+           prizeDesc:null,
+           prizeProbability:null,
+           prizeSurplusNumber:null,
+           sort:null
       };
 
+     this.openPrizeGoodsSubmit=true
+     this.title = "新增";
+   },
 
-      let data={
-        activityId:row.id
+   // 修改奖品
+   handleprizeUpdate(row){
+     this.imgList3=[]
+     const id = row.id || this.ids
+     getPrizeGoods(id).then(response => {
+       this.baseForm = response.data;
+       this.openPrizeGoodsSubmit = true;
+       this.title = "修改奖品";
+       let data2 = {
+           url: response.data.prizeImgFull,
+           relative_url: response.data.prizeImg
+         }
+       this.imgList3.push(data2)
+     });
+   },
+
+   // 删除奖品
+   handleprizeDelete(row){
+     const ids = row.id || this.ids;
+     this.$confirm('是否确认删除?', "警告", {
+         confirmButtonText: "确定",
+         cancelButtonText: "取消",
+         type: "warning"
+       }).then(function() {
+         return delPrizeGoods(ids);
+       }).then(() => {
+         this.getList();
+         this.msgSuccess("删除成功");
+       }).catch(() => {});
+   },
+
+
+   // 新增奖品提交
+   PrizeGoodsSubmit(){
+     if(this.imgList3.length!=0){
+      this.baseForm.prizeImg= this.imgList3[0].relative_url
+     }
+     else{
+       this.baseForm.prizeImg= ''
+     }
+
+      if (this.baseForm.activityId != null) {
+       updatePrizeGoods(this.baseForm).then(response => {
+       this.openPrizeGoodsSubmit=false
+        this.msgSuccess("编辑成功");
+         this.getPrizeGoodsList(this.baseForm.activityId)
+       });
       }
-      openActivityOnlineConfig(data).then(response => {
-
-	     let data = {
-	         url: response.activityOnline.groupImgUrlFull,
-	         relative_url: response.activityOnline.groupImgUrl
-	       }
-	     this.imgList8.push(data)
-
-        // 编辑
-       this.baseForm=response.activityOnline
-
-       this.openSellCardConfig=true
-       this.title = "售卡配置";
+      else{
+        addPrizeGoods(this.baseForm).then(response => {
+        this.openPrizeGoodsSubmit=false
+         this.msgSuccess("新增成功");
+          this.getPrizeGoodsList(this.baseForm.activityId)
+        });
+      }
 
 
+   },
 
-      });
+   // 取消售卡
+   cancelPrizeGoodsSubmit(){
+     this.openPrizeGoodsSubmit=false
+   },
+
+
+
+
+   // 专场列表
+
+  handleactivitySpecial(row){
+    this.getactivitySpecialList(row.activityId)
+  },
+
+  getactivitySpecialList(id){
+    this.title="专场列表"
+    let data={
+      activityId:id
+    }
+    listactivitySpecial(data).then(response => {
+      this.activitySpecialList=response.rows
+      this.total = response.total;
+      this.openactivitySpecial=true
+
+    });
+
+
+    listactivitySpecialgoods(data).then(response => {
+      this.goodsList=response.rows
+    });
+
+
+  },
+
+  // 新增专场
+  handleactivitySpecialAdd(){
+    this.imgList4=[]
+    this.baseForm = {
+          activityId:null,
+          specialName:null,
+          passwordStr:null,
+          sort:null,
+          endTime:null,
+          goodsIds:null
+     };
+
+    this.openactivitySpecialSubmit=true
+    this.title = "新增专场";
+  },
+
+
+
+
+
+
+    // 售卡配置
+    handleSellCard(row){
+      this.baseForm = {
+           activityId:null,
+           isOpengSellCard:null,
+           cardAmount:null,
+           isOpenSellCardCode:null,
+           cardSalesCommission:null
+      };
+
+     this.openSellCardConfig=true
+     this.title = "售卡配置";
 
 
     },
 
+    // 售卡配置提交
     SellCardConfigSubmit(){
 
-	    if(this.imgList8.length!=0){
-	     this.baseForm.groupImgUrl= this.imgList8[0].relative_url
-	    }
-	    else{
-	      this.baseForm.groupImgUrl= ''
-	    }
-
-      if(this.baseForm.userRoyalty>100){
-        this.msgError("一级提成最大输入100")
-        return
-      }
-
-      if(this.baseForm.userSubRoyalty>100){
-        this.msgError("二级提成最大输入100")
-        return
-      }
-
-
-
-      activityOnlineConfig(this.baseForm).then(response => {
+      cardsalesSubmit(this.baseForm).then(response => {
       this.openSellCardConfig=false
        this.msgSuccess("配置成功");
         this.getList()
       });
     },
 
+    // 取消售卡
     cancelSellCardConfig(){
       this.openSellCardConfig=false
     },
 
 
 
+   // 裂变配置
+   handleLieBian(row){
+     this.baseForm = {
+         activityId:null,
+         browsePrice:null,
+         browseIntegral:null,
+         firstFissionPrice:null,
+         secondFissionPrice:null,
+         firstFissionIntegral:null,
+         secondFissionIntegral:null
+     };
+
+    this.openLieBianConfig=true
+    this.title = "裂变配置";
+
+
+   },
+
+   // 裂变配置提交
+   LieBianSubmit(){
+
+     fissionSubmit(this.baseForm).then(response => {
+     this.openLieBianConfig=false
+      this.msgSuccess("配置成功");
+       this.getList()
+     });
+   },
+
+   // 取消裂变
+   cancelLieBian(){
+     this.openLieBianConfig=false
+   },
+
+
+
+
+
     // 数据配置
     handleDataConfig(row){
-
       this.baseForm = {
-        activityImageUrl: null,
-        activityDetailsImageUrl: null,
-        posterBackgroundImageUrl: null,
-        musicUrl: null,
-        sharingFriend: null,
-        sharingImageUrl: null,
-        sharingTitle: null,
-        sharingDescribe: null,
-        customerServicePhone: null,
-        subjectColor: null,
-        redEnvelopesStatus: null,
-        startAmount: null,
-        endAmount: null,
-        receiveMode: null,
-        extensionStatus: null,
-        extensionPrice: null,
-        isOpenDelayed: null,
-        browseCount:null,
-        enrollCount:null,
-        shareCount:null,
-        daysFicBrowseCount:null,
-        daysFicEnrollCount:null,
-        daysFicShareCount:null,
+        activityId: null,
+        browseCount: null,
+        enrollCount: null,
+        shareCount: null,
+        ficBrowseCount: null,
+        ficEnrollCount: null,
+        ficShareCount: null,
+        aysFicBrowseCount: null,
+        daysFicEnrollCount: null,
+        aysFicShareCount: null,
+
       };
 
-      let data={
-        activityId:row.id
-      }
-      openActivityOnlineConfig(data).then(response => {
-        // 编辑
-       this.baseForm=response.activityOnline
-       this.openDataConfig=true
-       this.title = "数据配置";
-      });
+      this.openDataConfig=true
+      this.title = "数据配置";
     },
 
     DataConfigSubmit(){
-      activityOnlineConfig(this.baseForm).then(response => {
+      dataSubmit(this.baseForm).then(response => {
       this.openDataConfig=false
        this.msgSuccess("配置成功");
         this.getList()
@@ -1467,6 +2686,140 @@ export default {
     cancelDataConfig(){
      this.openDataConfig=false
     },
+
+
+
+    // 奖励豆配置
+    handleBonusSubmit(row){
+      this.baseForm = {
+           activityId:null,
+           browseBeans:null,
+           fissionBeans:null,
+           enrollBeans:null,
+           cardBeans:null,
+           flashPurchaseBeans:null,
+           groupBeans:null,
+           preSoldBeans:null,
+           offlineOrderBeans:null,
+      };
+
+     this.openbonusbeansConfig=true
+     this.title = "奖励豆配置";
+
+
+    },
+
+    // 奖励豆配置提交
+    bonusbeansSubmit(){
+
+      bonusbeansSubmit(this.baseForm).then(response => {
+      this.openbonusbeansConfig=false
+       this.msgSuccess("配置成功");
+        this.getList()
+      });
+    },
+
+    // 取消奖励豆
+    cancelbonusbeans(){
+      this.openbonusbeansConfig=false
+    },
+
+
+     // 裂变充值
+     handleLieBianCode(row){
+       this.baseForm = {
+            activityId:null,
+            amount:null,
+            rechargeRemarks:null,
+            businessType:null
+       };
+
+      this.openCode1=true
+      this.title = "裂变充值";
+
+
+     },
+
+     // 裂变充值配置提交
+     code1Submit(){
+      this.baseForm.businessType=1
+       rechargeSubmit(this.baseForm).then(response => {
+       this.openCode1=false
+
+       });
+     },
+
+     // 取消裂变充值
+     cancelcode1(){
+       this.openCode1=false
+     },
+
+
+
+     // 奖励豆充值
+     handleBeansCode(row){
+       this.baseForm = {
+            activityId:null,
+            amount:null,
+            rechargeRemarks:null,
+            businessType:null
+       };
+
+      this.openCode2=true
+      this.title = "奖励豆充值";
+
+
+     },
+
+     // 奖励豆充值提交
+     code2Submit(){
+       this.baseForm.businessType=2
+       rechargeSubmit(this.baseForm).then(response => {
+       this.openCode2=false
+
+       });
+     },
+
+     // 取消奖励豆充值
+     cancelcode2(){
+       this.openCode2=false
+     },
+
+
+
+     // 短信充值
+     handleMessageCode(row){
+       this.baseForm = {
+            activityId:null,
+            amount:null,
+            rechargeRemarks:null,
+            businessType:null
+       };
+
+      this.openCode3=true
+      this.title = "短信充值";
+
+
+     },
+
+     // 短信充值提交
+     code3Submit(){
+       this.baseForm.businessType=3
+       rechargeSubmit(this.baseForm).then(response => {
+       this.openCode3=false
+
+       });
+     },
+
+     // 取消短信充值
+     cancelcode3(){
+       this.openCode3=false
+     },
+
+
+
+
+
 
 
     // 秒杀配置
@@ -1819,270 +3172,71 @@ export default {
     // 基础配置
     handleBase(row){
 
-      this.$nextTick(() => {
-        this.$refs.imageuploadCour.syncElUpload();
-      })
-
       this.imgList=[];
       this.imgList2=[];
-      this.imgList3=[];
-      this.imgList4=[];
-      this.imgListAd1=[];
-      this.imgListAd2=[];
-      this.imgListAd3=[];
-      this.imgListAd4=[];
-      this.imgListcour=[];
-
-      this.musciList=[];
       this.baseForm = {
-        activityImageUrl: null,
-        activityDetailsImageUrl: null,
-        posterBackgroundImageUrl: null,
-        musicUrl: null,
-        musicUrlFull:null,
-        sharingFriend: null,
-        sharingImageUrl: null,
-        sharingTitle: null,
-        sharingDescribe: null,
-        customerServicePhone: null,
-        subjectColor: null,
-        redEnvelopesStatus: null,
-        startAmount: null,
-        endAmount: null,
-        receiveMode: null,
-        extensionStatus: null,
-        extensionPrice: null,
-        isOpenDelayed: null
+        activityId: null,
+        ruleDesc: null,
+        cooperateImgUrl: null,
+        serviceImgUrl: null,
+        subjectColour:null,
+        directAccount: null,
+        dayDirectNum: null,
+        dayDirectMaxPrice: null,
       };
-
-
-      // 回显接口
-      let data={
-        activityId:row.id
-      }
-      openActivityOnlineConfig(data).then(response => {
-        // 编辑
-       this.baseForm=response.activityOnline
-       if(response.activityOnline.subjectColor!=null){
-          this.baseForm.subjectColor=parseInt(response.activityOnline.subjectColor)
-       }
-       console.log(this.baseForm)
-
-       if(response.activityOnline!=null){
-
-         if(response.activityOnline.activityImageUrl!=null){
-           let data = {
-               url: response.activityOnline.activityImageUrlFull,
-               relative_url: response.activityOnline.activityImageUrl
-             }
-           this.imgList.push(data)
-         }
-
-         if(response.activityOnline.activityDetailsImageUrl!=null){
-           let data2 = {
-               url: response.activityOnline.activityDetailsImageUrlFull,
-               relative_url: response.activityOnline.activityDetailsImageUrl
-             }
-           this.imgList2.push(data2)
-         }
-
-
-         if(response.activityOnline.posterBackgroundImageUrl!=null){
-           let data3 = {
-               url: response.activityOnline.posterBackgroundImageUrlFull,
-               relative_url: response.activityOnline.posterBackgroundImageUrl
-             }
-           this.imgList3.push(data3)
-         }
-
-         if(response.activityOnline.sharingImageUrl!=null){
-           let data4 = {
-               url: response.activityOnline.sharingImageUrlFull,
-               relative_url: response.activityOnline.sharingImageUrl
-             }
-           this.imgList4.push(data4)
-         }
-
-         if(response.activityOnline.advertisingsImageOneUrl!=null){
-           let data5 = {
-               url: response.activityOnline.advertisingsImageOneUrlFull,
-               relative_url: response.activityOnline.advertisingsImageOneUrl
-             }
-           this.imgListAd1.push(data5)
-         }
-
-         if(response.activityOnline.advertisingsImageTwoUrl!=null){
-           let data6 = {
-               url: response.activityOnline.advertisingsImageTwoUrlFull,
-               relative_url: response.activityOnline.advertisingsImageTwoUrl
-             }
-           this.imgListAd2.push(data6)
-         }
-
-         if(response.activityOnline.advertisingsImageThreeUrl!=null){
-           let data7 = {
-               url: response.activityOnline.advertisingsImageThreeUrlFull,
-               relative_url: response.activityOnline.advertisingsImageThreeUrl
-             }
-           this.imgListAd3.push(data7)
-         }
-
-         if(response.activityOnline.advertisingsImageFourUrl!=null){
-           let data8 = {
-               url: response.activityOnline.advertisingsImageFourUrlFull,
-               relative_url: response.activityOnline.advertisingsImageFourUrl
-             }
-           this.imgListAd4.push(data8)
-         }
-
-         if(response.activityOnline.rotationMapList!=null){
-            for (var i = 0; i < response.activityOnline.rotationMapList.length; i++) {
-             let data9 = {
-                 url: response.activityOnline.rotationMapList[i],
-                 relative_url: response.activityOnline.rotationMapList[i].split(".com")[1]
-               }
-             this.imgListcour.push(data9)
-            }
-         }
-
-
-
-         if(response.activityOnline.musicUrl!=null){
-           let music={
-             name:response.activityOnline.musicUrl,
-             url:response.activityOnline.musicUrlFull,
-           }
-           this.musciList.push(music)
-         }
-
-       }
-
-
 
         this.openBase=true
         this.title = "基础配置";
-      });
-
-
+        this.$nextTick(() => {
+          this.$refs.imageupload.syncElUpload();
+        })
+        this.$nextTick(() => {
+          this.$refs.imageupload2.syncElUpload();
+        })
     },
 
 
      baseSubmit(){
 
-        console.log(this.musciList)
        if(this.imgList.length!=0){
-        this.baseForm.activityImageUrl= this.imgList[0].relative_url
-       }
-       else{
-         this.msgError("活动头图不能为空")
-         return
-
-       }
-
-
-       if(this.musciList.length==0){
-         console.log("asdasdasdasdadasdads")
-         this.baseForm.musicUrl=null
-         this.baseForm.musicUrlFull=null
-       }
-
-
-
-
-       if(this.imgListcour.length!=0){
-         console.log("fffffffff")
-         console.log(this.imgListcour)
          let imageStr=[]
-
-         for (var i = 0; i < this.imgListcour.length; i++) {
-             imageStr.push(this.imgListcour[i].relative_url)
+         for (var i = 0; i < this.imgList.length; i++) {
+             imageStr.push(this.imgList[i].relative_url)
          }
-
-           this.baseForm.rotationMap=imageStr.toString()
+           this.baseForm.cooperateImgUrl=imageStr.toString()
        }
        else{
-           this.baseForm.rotationMap=''
+           this.baseForm.cooperateImgUrl=''
        }
-
-
-
-
 
        if(this.imgList2.length!=0){
-        this.baseForm.activityDetailsImageUrl= this.imgList2[0].relative_url
+         let imageStr=[]
+         for (var i = 0; i < this.imgList2.length; i++) {
+             imageStr.push(this.imgList2[i].relative_url)
+         }
+           this.baseForm.serviceImgUrl=imageStr.toString()
        }
        else{
-		 this.baseForm.activityDetailsImageUrl=''
+           this.baseForm.serviceImgUrl=''
        }
 
-       if(this.imgList3.length!=0){
-        this.baseForm.posterBackgroundImageUrl= this.imgList3[0].relative_url
-       }
-       else{
-         this.baseForm.posterBackgroundImageUrl= ''
-       }
-
-       if(this.imgList4.length!=0){
-        this.baseForm.sharingImageUrl= this.imgList4[0].relative_url
-       }
-       else{
-         this.msgError("分享小图标不能为空")
-         return
-
-       }
-
-
-
-       if(this.imgListAd1.length!=0){
-        this.baseForm.advertisingsImageOneUrl= this.imgListAd1[0].relative_url
-       }
-       else{
-         this.baseForm.advertisingsImageOneUrl= ''
-       }
-
-       if(this.imgListAd2.length!=0){
-        this.baseForm.advertisingsImageTwoUrl= this.imgListAd2[0].relative_url
-       }
-       else{
-         this.baseForm.advertisingsImageTwoUrl= ''
-       }
-
-       if(this.imgListAd3.length!=0){
-        this.baseForm.advertisingsImageThreeUrl= this.imgListAd3[0].relative_url
-       }
-       else{
-         this.baseForm.advertisingsImageThreeUrl= ''
-       }
-
-       if(this.imgListAd4.length!=0){
-        this.baseForm.advertisingsImageFourUrl= this.imgListAd4[0].relative_url
-       }
-       else{
-         this.baseForm.advertisingsImageFourUrl= ''
-       }
-
-
-       console.log(this.baseForm)
-        let data={
-         activityOnline:this.baseForm
-        }
-
-        this.$refs["baseForm"].validate(valid => {
-          if (valid) {
-         activityOnlineConfig(this.baseForm).then(response => {
-          this.openBase=false
-          this.msgSuccess("配置成功");
-           this.getList()
-         });
-          }
-        });
+       basicsSubmit(this.baseForm).then(response => {
+        this.openBase=false
+        this.msgSuccess("配置成功");
+         this.getList()
+       });
 
 
      },
-
      cancelbaseSubmit(){
         this.openBase=false;
      },
+
+
+
+
+
+
 
 
 
@@ -2112,6 +3266,78 @@ export default {
 
 
     },
+
+
+    // 排版管理
+    handleComposeType(row){
+       this.getactivityComposeType(row.activityId)
+    },
+
+    getactivityComposeType(id) {
+      let data={
+       activityId:id
+      }
+      activityComposeTypeList(data).then(response => {
+        this.activityComposeTypeList = response.rows;
+        this.openactivityComposeType = true;
+        this.title = "排版管理";
+      });
+    },
+
+
+    // 编辑排版
+    handleactivityComposeTypeUpdate(row){
+      const id = row.id || this.ids
+      getactivityComposeType(id).then(response => {
+        this.baseForm = response.data;
+        this.openEditComposeType = true;
+        this.title = "修改排版";
+      });
+    },
+
+    EditComposeTypeSubmit(){
+      updateactivityComposeType(this.baseForm).then(response => {
+        this.openEditComposeType=false
+        this.msgSuccess("修改成功");
+        this.activityComposeTypeList()
+      });
+    },
+
+
+    cancelEditComposeType(){
+       this.openEditComposeType=false;
+    },
+
+
+
+    // 排版状态管理
+    handleisOpenChange(row){
+      console.log(row.isOpen)
+      let data={
+         id:row.id,
+         isOpen:row.isOpen
+      }
+      updateactivityComposeTypestatus(data).then(response => {
+
+      });
+
+
+    },
+
+    // 排版顺序管理
+    handlesortChange(row){
+      let data={
+         id:row.id,
+         sort:row.sort
+      }
+      updateactivityComposeTypesort(data).then(response => {
+
+      });
+
+
+    },
+
+
 
 
 

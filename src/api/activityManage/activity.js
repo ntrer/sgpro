@@ -52,6 +52,264 @@ export function exportActivity(query) {
   })
 }
 
+
+// 售卡配置
+export function cardsalesSubmit(data) {
+  return request({
+    url: '/activityManage/activityConfig/set/cardsales',
+    method: 'put',
+    data: data
+  })
+}
+
+// 裂变配置
+export function fissionSubmit(data) {
+  return request({
+    url: '/activityManage/activityConfig/set/fission',
+    method: 'put',
+    data: data
+  })
+}
+
+// 数据配置
+export function dataSubmit(data) {
+  return request({
+    url: '/activityManage/activityConfig/set/data',
+    method: 'put',
+    data: data
+  })
+}
+
+
+// 基础配置
+export function basicsSubmit(data) {
+  return request({
+    url: '/activityManage/activityConfig/set/basics',
+    method: 'put',
+    data: data
+  })
+}
+
+export function bonusbeansSubmit(data) {
+  return request({
+    url: '/activityManage/activityConfig/set/bonusbeans',
+    method: 'put',
+    data: data
+  })
+}
+
+
+// 充值配置
+export function rechargeSubmit(query) {
+  return request({
+    url: '/orderManage/activityRechargeRecord/bonus/beans/recharge/code',
+    method: 'get',
+    params: query
+  })
+}
+
+// 奖品列表
+export function prizeGoodsList(query) {
+  return request({
+    url: '/PrizeGoods/PrizeGoods/list',
+    method: 'get',
+    params: query
+  })
+}
+
+export function addPrizeGoods(data) {
+  return request({
+    url: '/PrizeGoods/PrizeGoods',
+    method: 'post',
+    data: data
+  })
+}
+
+
+// 获取奖品详情
+export function getPrizeGoods(id) {
+  return request({
+    url: '/PrizeGoods/PrizeGoods/' + id,
+    method: 'get'
+  })
+}
+// 修改奖品
+export function updatePrizeGoods(data) {
+  return request({
+    url: '/PrizeGoods/PrizeGoods',
+    method: 'put',
+    data: data
+  })
+}
+
+// 删除奖品
+export function delPrizeGoods(id) {
+  return request({
+    url: '/PrizeGoods/PrizeGoods/' + id,
+    method: 'delete'
+  })
+}
+
+
+
+// 排版列表
+export function activityComposeTypeList(query) {
+  return request({
+    url: '/activityManage/activityComposeType/list',
+    method: 'get',
+    params: query
+  })
+}
+
+export function getactivityComposeType(id) {
+  return request({
+    url: '/activityManage/activityComposeType/' + id,
+    method: 'get'
+  })
+}
+
+
+// 修改排版
+export function updateactivityComposeType(data) {
+  return request({
+    url: '/activityManage/activityComposeType',
+    method: 'put',
+    data: data
+  })
+}
+
+// 修改排版排序
+export function updateactivityComposeTypesort(data) {
+  return request({
+    url: '/activityManage/activityComposeType/set/sort',
+    method: 'put',
+    data: data
+  })
+}
+
+// 修改排版状态
+export function updateactivityComposeTypestatus(data) {
+  return request({
+    url: '/activityManage/activityComposeType/set/status',
+    method: 'put',
+    data: data
+  })
+}
+
+
+// 专场列表
+export function listactivitySpecial(query) {
+  return request({
+    url: '/extensionManage/activitySpecial/list',
+    method: 'get',
+    params: query
+  })
+}
+
+
+// 新增专场
+export function addactivitySpecial(data) {
+  return request({
+    url: '/extensionManage/activitySpecial',
+    method: 'post',
+    data: data
+  })
+}
+
+
+
+// 修改专场
+export function updateactivitySpecial(data) {
+  return request({
+    url: '/extensionManage/activitySpecial',
+    method: 'put',
+    data: data
+  })
+}
+
+// 删除专场
+export function delactivitySpecial(id) {
+  return request({
+    url: '/extensionManage/activitySpecial/' + id,
+    method: 'delete'
+  })
+}
+
+
+export function listactivitySpecialgoods(query) {
+  return request({
+    url: '/extensionManage/activitySpecial/open/goods/list',
+    method: 'get',
+    params: query
+  })
+}
+
+
+
+
+
+
+
+// 商品列表
+export function listActivitygoods(query) {
+  return request({
+    url: '/extensionManage/goods/list',
+    method: 'get',
+    params: query
+  })
+}
+
+
+export function addActivitygoods(data) {
+  return request({
+    url: '/extensionManage/goods',
+    method: 'post',
+    data: data
+  })
+}
+
+
+
+// 修改专场
+export function updateactivitygoods(data) {
+  return request({
+    url: '/extensionManage/goods',
+    method: 'put',
+    data: data
+  })
+}
+
+// 删除专场
+export function delactivitygoods(id) {
+  return request({
+    url: '/extensionManage/goods/' + id,
+    method: 'delete'
+  })
+}
+
+
+export function getActivitygoods(id) {
+  return request({
+    url: '/extensionManage/goods/' + id,
+    method: 'get'
+  })
+}
+
+
+// 上架下架
+export function updategoodsstatus(data) {
+  return request({
+    url: '/extensionManage/goods/status',
+    method: 'put',
+    data: data
+  })
+}
+
+
+
+
+
+
 // 查询品牌列表
 export function listBrand(query) {
   return request({
