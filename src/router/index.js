@@ -116,6 +116,22 @@ export const constantRoutes = [
  //      },
 
 
+  {
+        path: '/award',
+        component: Layout,
+        hidden: true,
+        redirect: 'noredirect',
+        children: [
+          {
+            path: 'award',
+            component: (resolve) => require(['@/views/award/awardpage/index'], resolve),
+            name: 'award',
+            meta: { title: '控制面板', icon: 'user' }
+          }
+        ]
+      },
+
+
 
 
   {

@@ -3,7 +3,7 @@ import request from '@/utils/request'
 // 查询小程序推荐商品关联列表
 export function listAppSeckillGoods(query) {
   return request({
-    url: '/app/appSeckillGoods/getSeckillGoodsList',
+    url: '/app/appSeckillGoods/list',
     method: 'get',
     params: query
   })

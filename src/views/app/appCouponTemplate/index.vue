@@ -112,9 +112,7 @@
           <el-input v-model="form.couponName" placeholder="请输入" />
         </el-form-item>
 
-        <el-form-item label="优惠券价格" prop="price">
-          <el-input v-model="form.price" placeholder="请输入" />
-        </el-form-item>
+        
 
         <el-form-item label="优惠券类型" prop="couponType" style="width: 100%;">
           <el-select v-model="form.couponType" placeholder="请选择" style="width: 100%;">
@@ -151,6 +149,10 @@
           <el-select v-model="form.isCharge" placeholder="请选择" style="width: 100%;">
             <el-option v-for="(item, index) in isChargeList" :key="item.dictValue" :label="item.dictLabel" :value="item.dictValue"/>
           </el-select>
+        </el-form-item>
+        
+        <el-form-item label="优惠券价格" prop="price">
+          <el-input v-model="form.price" placeholder="请输入" />
         </el-form-item>
 
         <el-form-item label="截止时间" prop="closeTime" style="width: 100%;">

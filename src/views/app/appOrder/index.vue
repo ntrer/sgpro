@@ -181,16 +181,18 @@
         <el-form-item label="下单时间" prop="orderTime">
           <el-date-picker clearable size="small"
             v-model="form.orderTime"
-            type="date"
-            value-format="yyyy-MM-dd"
+            type="datetime"
+            format="yyyy-MM-dd HH:mm:ss"
+            value-format="yyyy-MM-dd HH:mm:ss"
             placeholder="选择下单时间">
           </el-date-picker>
         </el-form-item>
         <el-form-item label="支付回调时间" prop="respPayTime">
           <el-date-picker clearable size="small"
             v-model="form.respPayTime"
-            type="date"
-            value-format="yyyy-MM-dd"
+            type="datetime"
+            format="yyyy-MM-dd HH:mm:ss"
+            value-format="yyyy-MM-dd HH:mm:ss"
             placeholder="选择支付回调时间">
           </el-date-picker>
         </el-form-item>

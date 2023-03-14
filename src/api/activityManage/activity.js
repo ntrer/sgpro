@@ -53,6 +53,17 @@ export function exportActivity(query) {
 }
 
 
+export function ActivitystoreList(query) {
+  return request({
+    url: '/activityManage/activity/org/store/list',
+    method: 'get',
+    params: query
+  })
+}
+
+
+
+
 // 售卡配置
 export function cardsalesSubmit(data) {
   return request({
@@ -152,6 +163,66 @@ export function delPrizeGoods(id) {
 
 
 
+// 奖励豆阶段列表
+export function ActivityStageList(query) {
+  return request({
+    url: '/extensionManage/ActivityStage/list',
+    method: 'get',
+    params: query
+  })
+}
+
+// 新增奖励豆阶段
+export function addActivityStage(data) {
+  return request({
+    url: '/extensionManage/ActivityStage',
+    method: 'post',
+    data: data
+  })
+}
+
+
+// 获取奖励豆阶段
+export function getActivityStage(id) {
+  return request({
+    url: '/extensionManage/ActivityStage/' + id,
+    method: 'get'
+  })
+}
+// 修改奖励豆阶段
+export function updateActivityStage(data) {
+  return request({
+    url: '/extensionManage/ActivityStage',
+    method: 'put',
+    data: data
+  })
+}
+
+// 删除奖励豆阶段
+export function delActivityStage(id) {
+  return request({
+    url: '/extensionManage/ActivityStage/' + id,
+    method: 'delete'
+  })
+}
+
+
+
+
+export function getactivityQrCode(query) {
+  return request({
+    url: '/activityManage/activity/activityQrCode',
+    method: 'get',
+    params: query,
+    responseType: 'blob'
+  })
+}
+
+
+
+
+
+
 // 排版列表
 export function activityComposeTypeList(query) {
   return request({
@@ -236,6 +307,14 @@ export function delactivitySpecial(id) {
 }
 
 
+export function getactivitySpecial(id) {
+  return request({
+    url: '/extensionManage/activitySpecial/' + id,
+    method: 'get'
+  })
+}
+
+
 export function listactivitySpecialgoods(query) {
   return request({
     url: '/extensionManage/activitySpecial/open/goods/list',
@@ -244,6 +323,61 @@ export function listactivitySpecialgoods(query) {
   })
 }
 
+
+
+// 种草门店列表
+export function listactivityRecommendVideostore(query) {
+  return request({
+    url: '/extensionManage/activityRecommendVideo/store/manage/list',
+    method: 'get',
+    params: query
+  })
+}
+
+// 种草视频列表
+export function listactivityRecommendVideo(query) {
+  return request({
+    url: '/extensionManage/activityRecommendVideo/list',
+    method: 'get',
+    params: query
+  })
+}
+
+
+// 新增视频
+export function addactivityRecommendVideo(data) {
+  return request({
+    url: '/extensionManage/activityRecommendVideo',
+    method: 'post',
+    data: data
+  })
+}
+
+
+
+// 修改视频
+export function updateactivityRecommendVideo(data) {
+  return request({
+    url: '/extensionManage/activityRecommendVideo',
+    method: 'put',
+    data: data
+  })
+}
+
+export function getactivityRecommendVideo(id) {
+  return request({
+    url: '/extensionManage/activityRecommendVideo/' + id,
+    method: 'get'
+  })
+}
+
+
+export function delactivityRecommendVideo(id) {
+  return request({
+    url: '/extensionManage/activityRecommendVideo/' + id,
+    method: 'delete'
+  })
+}
 
 
 
@@ -270,7 +404,7 @@ export function addActivitygoods(data) {
 
 
 
-// 修改专场
+
 export function updateactivitygoods(data) {
   return request({
     url: '/extensionManage/goods',
@@ -749,5 +883,47 @@ export function setguideConfig(data) {
     url: '/activityManage/guideConfig',
     method: 'post',
     data: data
+  })
+}
+
+
+// 优惠券列表
+export function appCouponTemplatelist(query) {
+  return request({
+    url: '/extensionManage/coupon/list',
+    method: 'get',
+    params: query
+  })
+}
+
+export function addCouponTemplate(data) {
+  return request({
+    url: '/extensionManage/coupon',
+    method: 'post',
+    data: data
+  })
+}
+
+export function getCouponTemplate(id) {
+  return request({
+    url: '/extensionManage/coupon/' + id,
+    method: 'get'
+  })
+}
+
+
+export function updateCouponTemplate(data) {
+  return request({
+    url: '/extensionManage/coupon',
+    method: 'put',
+    data: data
+  })
+}
+
+// 删除活动
+export function delCouponTemplate(id) {
+  return request({
+    url: '/extensionManage/coupon/' + id,
+    method: 'delete'
   })
 }

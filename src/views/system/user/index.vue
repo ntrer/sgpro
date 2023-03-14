@@ -52,7 +52,7 @@
           </el-form-item>
 
 
-          <el-form-item label="品牌名称" prop="brandId"  v-if="userType!=5&&userType!=11">
+         <!-- <el-form-item label="品牌名称" prop="brandId"  v-if="userType!=5&&userType!=11">
             <el-select v-model="queryParams.brandId"  placeholder="请选择" style="width: 100%;">
               <el-option
                 v-for="item in brandList"
@@ -61,7 +61,7 @@
                 :value="item.id"
               ></el-option>
             </el-select>
-          </el-form-item>
+          </el-form-item> -->
 
 
           <!-- <el-form-item label="手机号码" prop="phonenumber">
@@ -121,7 +121,7 @@
             </template>
 
           </el-table-column> -->
-          <el-table-column label="所属品牌" align="center" key="brandName" prop="brandName" width="160"/>
+          <el-table-column label="所属门店" align="center" key="brandName" prop="brandName" width="160"/>
           <!-- <el-table-column label="手机号码" align="center" key="phonenumber" prop="phonenumber" width="160"/> -->
           <el-table-column label="头像" align="center" width="140">
             <template slot-scope="scope">
@@ -155,7 +155,7 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="是否开启签到" align="center" key="phonenumber" prop="phonenumber" :formatter="isOpenformatFormat"/>
+          <!-- <el-table-column label="是否开启签到" align="center" key="isOpenSign" prop="isOpenSign" :formatter="isOpenformatFormat"/> -->
           <el-table-column label="授权状态" align="center" key="isBindWx" prop="isBindWx" :formatter="isBindWxFormat"/>
 
           <el-table-column label="状态" align="center" key="status" :formatter="statusTypeformat"/>
@@ -245,11 +245,11 @@
            </el-select>
          </el-form-item> -->
 
-         <el-form-item label="是否开启签到" prop="isOpenSign">
+   <!--      <el-form-item label="是否开启签到" prop="isOpenSign">
            <el-select v-model="form.isOpenSign" placeholder="请选择" clearable size="small" style="width: 100%;">
              <el-option v-for="(item, index) in isOpenSignList" :key="index" :label="item.dictLabel" :value="item.dictValue"/>
            </el-select>
-         </el-form-item>
+         </el-form-item> -->
 
          <el-form-item label="头像" prop="headPortraitImageUrlFull" class="require">
            <imgUpload ref="imageupload" v-model="imgList" :limit="1" :isSingle="false"></imgUpload>
@@ -558,9 +558,9 @@ export default {
     },
 
     getlistBrand(){
-      listBrand(this.queryParams).then(response => {
-        this.brandList = response.data;
-      });
+      // listBrand(this.queryParams).then(response => {
+      //   this.brandList = response.data;
+      // });
     },
 
 

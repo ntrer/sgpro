@@ -11,6 +11,17 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
+      
+      <el-form-item label="电话" prop="storeTel">
+        <el-input
+        style="width: 160px;"
+          v-model="queryParams.storeTel"
+          placeholder="请输入"
+          clearable
+          size="small"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
 
 
       <el-form-item>
@@ -43,6 +54,24 @@
       <el-table-column label="所属战区" align="center" prop="regionName" width="180"/>
       <el-table-column label="所属战队" align="center" prop="teamName" width="180"/>
       <el-table-column label="创建时间" align="center" prop="createTime" width="180" :formatter="createTimeFormat"> </el-table-column>
+      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+        <template slot-scope="scope">
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-edit"
+            @click="handleUpdate(scope.row)"
+            v-hasPermi="['basicManage:store:edit']"
+          >编辑</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-delete"
+            @click="handleDelete(scope.row)"
+            v-hasPermi="['basicManage:store:remove']"
+          >删除</el-button>
+        </template>
+      </el-table-column>
     </el-table>
 
     <pagination
@@ -68,7 +97,7 @@
         <el-form-item label="排序" prop="sort;">
           <el-input v-model="form.sort" placeholder="请输入" />
         </el-form-item>
-       <el-form-item label="省市区" prop="areaId" >
+       <!-- <el-form-item label="省市区" prop="areaId" >
          <el-cascader
          style="width: 100%;"
          class="my-input"
@@ -85,7 +114,7 @@
 
         <el-form-item label="联系电话" prop="phone">
           <el-input v-model="form.phone" placeholder="请输入电话"/>
-        </el-form-item>
+        </el-form-item> -->
 
         <el-form-item label="门店详情" prop="storeContent" style="width: 90%;">
           <el-input  :rows="4" v-model="form.storeContent" type="textarea" placeholder="请输入简介" />
@@ -97,7 +126,7 @@
 
 
 
-        <el-form-item label="所属组织" prop="orgId">
+        <el-form-item label="所属组织" prop="orgId" v-if="this.userType==0">
           <el-select v-model="form.orgId"  placeholder="请选择" style="width: 100%;">
             <el-option
               v-for="item in OrganizationList"
@@ -109,7 +138,7 @@
         </el-form-item>
 
         <el-form-item label="所属战区" prop="regionId">
-          <el-select v-model="form.regionId"  placeholder="请选择" style="width: 100%;">
+          <el-select v-model="form.regionId"  placeholder="请选择" style="width: 100%;" @change="getTeam">
             <el-option
               v-for="item in RegionList"
               :key="item.regionId"
@@ -140,7 +169,7 @@
 </template>
 
 <script>
-import {liststore} from "@/api/basicManage/store";
+import {delstore,getstore,updatestore,addstore,liststore} from "@/api/basicManage/store";
 import {listteam} from "@/api/basicManage/team";
 import {listregion} from "@/api/basicManage/region";
 import {listOrganization,listArea} from "@/api/basicManage/organization";
@@ -181,13 +210,14 @@ export default {
         pageNum: 1,
         pageSize: 10,
         storeName: null,
-        phone: null
+        storeTel: null
       },
       // 表单参数
       form: {},
       // 表单校验
       rules: {
       },
+      userType:null,
 
       organizationTypeList:[{
          "dictLabel": "工厂",
@@ -266,10 +296,12 @@ export default {
     };
   },
   created() {
+     this.userType=localStorage.getItem("userType")
     this.getList();
-    this.getOrganizationList();
+    if(this.userType==0){
+       this.getOrganizationList();
+    }
     this.getRegionList();
-    this.getTeamList();
 
   },
   methods: {
@@ -286,6 +318,11 @@ export default {
 
     areaNameFormat(row, column) {
       return row.provinceName+"/"+row.cityName
+    },
+
+
+    getTeam(id){
+      this.getTeamList(id);
     },
 
     locationsChange2(value) {
@@ -309,8 +346,12 @@ export default {
       });
     },
 
-    getTeamList() {
-      listteam(this.queryParams).then(response => {
+
+    getTeamList(id) {
+      let data={
+        regionId:id
+      }
+      listteam(data).then(response => {
         this.teamList = response.rows;
       });
     },
@@ -368,6 +409,7 @@ export default {
     /** 新增按钮操作 */
     handleAdd() {
       this.reset();
+      this.imgList=[]
       this.open = true;
       this.title = "新增门店";
       this.$nextTick(() => {
@@ -377,7 +419,8 @@ export default {
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
-      const id = row.id || this.ids
+      this.imgList=[]
+      const id = row.storeId || this.ids
       getstore(id).then(response => {
         this.form = response.data;
         this.open = true;
@@ -385,10 +428,10 @@ export default {
         let  relativeUrl=response.data.storeImg.split(',');
 
 
-         if(response.data.storeImgList!=null){
-           for (var i = 0; i < response.data.storeImgList.length; i++) {
+         if(response.data.storeImgFull!=null){
+           for (var i = 0; i < response.data.storeImgFull.length; i++) {
              let data = {
-                 url: response.data.storeImgList[i],
+                 url: response.data.storeImgFull[i],
                  relative_url: relativeUrl[i]
                }
                this.imgList.push(data)
@@ -400,16 +443,22 @@ export default {
     submitForm() {
 
       let imageStr=[]
-
-      for (var i = 0; i < this.imgList.length; i++) {
-          imageStr.push(this.imgList[i].relative_url)
+      
+      if(this.imgList.length==0){
+        this.msgError("图片不能为空")
+        return
+      }else{
+        for (var i = 0; i < this.imgList.length; i++) {
+            imageStr.push(this.imgList[i].relative_url)
+        }
+        
+        this.form.storeImg=imageStr.toString()
       }
-
-      this.form.storeImg=imageStr.toString()
+      
 
       this.$refs["form"].validate(valid => {
         if (valid) {
-          if (this.form.id != null) {
+          if (this.form.storeId != null) {
             updatestore(this.form).then(response => {
               this.msgSuccess("修改成功");
               this.open = false;
@@ -427,7 +476,7 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      const ids = row.id || this.ids;
+      const ids = row.storeId || this.ids;
       this.$confirm('是否确认删除?', "警告", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
@@ -457,3 +506,10 @@ export default {
   }
 };
 </script>
+<style scoped>
+ .require/deep/.el-form-item__label::before{
+   content: "*";
+   color: #ff4949;
+   margin-right: 4px;
+ }
+ </style>

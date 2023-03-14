@@ -33,19 +33,21 @@
 
       <el-form-item label="开始时间" prop="startDate" >
         <el-date-picker clearable size="small"
-        style="width: 160px;"
+        style="width: 190px;"
           v-model="queryParams.startDate"
-          type="date"
-          value-format="yyyy-MM-dd"
+          type="datetime"
+          format="yyyy-MM-dd HH:mm:ss"
+          value-format="yyyy-MM-dd HH:mm:ss"
           placeholder="选择开始时间">
         </el-date-picker>
       </el-form-item>
       <el-form-item label="结束时间" prop="endDate" >
         <el-date-picker clearable size="small"
-        style="width: 160px;"
+        style="width: 190px;"
           v-model="queryParams.endDate"
-          type="date"
-          value-format="yyyy-MM-dd"
+          type="datetime"
+          format="yyyy-MM-dd HH:mm:ss"
+          value-format="yyyy-MM-dd HH:mm:ss"
           placeholder="选择结束时间">
         </el-date-picker>
       </el-form-item>

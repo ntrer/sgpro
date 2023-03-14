@@ -8,8 +8,9 @@
        <span>版本号：0.0.1</span>
     </div> -->
 
-
+  
   </div>
+  
 </template>
 
 <script>
@@ -73,6 +74,8 @@ export default {
 
 
   methods: {
+    
+
 
     closeDialog(){
       this.open=false

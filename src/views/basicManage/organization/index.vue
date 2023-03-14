@@ -456,39 +456,35 @@ export default {
     },
     /** 提交按钮 */
     submitForm() {
-      
+
       if(this.imgList2.length!=0){
        this.form.appCoverImage= this.imgList2[0].relative_url
       }
       else{
         this.form.appCoverImage= ''
       }
-      
+
       if(this.imgList3.length!=0){
        this.form.organizationImageUrl= this.imgList3[0].relative_url
       }
       else{
         this.form.organizationImageUrl= ''
       }
-      
-      
-      this.$refs["form"].validate(valid => {
-        if (valid) {
-          if (this.form.id != null) {
-            updateOrganization(this.form).then(response => {
-              this.msgSuccess("修改成功");
-              this.open = false;
-              this.getList();
-            });
-          } else {
-            addOrganization(this.form).then(response => {
-              this.msgSuccess("新增成功");
-              this.open = false;
-              this.getList();
-            });
-          }
-        }
-      });
+
+
+      if (this.form.orgId != null) {
+        updateOrganization(this.form).then(response => {
+          this.msgSuccess("修改成功");
+          this.open = false;
+          this.getList();
+        });
+      } else {
+        addOrganization(this.form).then(response => {
+          this.msgSuccess("新增成功");
+          this.open = false;
+          this.getList();
+        });
+      }
     },
     /** 删除按钮操作 */
     handleDelete(row) {

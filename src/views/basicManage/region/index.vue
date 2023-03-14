@@ -46,14 +46,32 @@
 
 
     <el-table border v-loading="loading" :data="redEnvelopesRecordList" @selection-change="handleSelectionChange">
-      <el-table-column label="战区名称" align="center" prop="regionName;" width="180"/>
+      <el-table-column label="战区名称" align="center" prop="regionName" width="180"/>
       <el-table-column label="简介" align="center" prop="introduce" width="300"/>
       <el-table-column label="电话" align="center" prop="phone" width="180"/>
-      <el-table-column label="组织信息" align="center" prop="organizationInfo" width="180"/>
+      <!-- <el-table-column label="组织信息" align="center" prop="organizationInfo" width="180"/> -->
       <el-table-column label="所属组织" align="center" prop="organizationName" width="180"/>
       <el-table-column label="省市区" align="center" prop="areaName" width="180" :formatter="areaNameFormat"/>
-      <el-table-column label="活动场次" align="center" prop="activityNum" />
-      <el-table-column label="创建时间" align="center" prop="createTime" width="180" :formatter="createTimeFormat"> </el-table-column>
+      <!-- <el-table-column label="活动场次" align="center" prop="activityNum" /> -->
+      <el-table-column label="创建时间" align="center" prop="createTime" width="180" > </el-table-column>
+      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+        <template slot-scope="scope">
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-edit"
+            @click="handleUpdate(scope.row)"
+            v-hasPermi="['basicManage:region:edit']"
+          >编辑</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-delete"
+            @click="handleDelete(scope.row)"
+            v-hasPermi="['basicManage:region:remove']"
+          >删除</el-button>
+        </template>
+      </el-table-column>
     </el-table>
 
     <pagination
@@ -90,12 +108,12 @@
        </el-form-item>
 
        <el-form-item label="简介" prop="introduce" style="width: 90%;">
-         <el-input  :rows="4" v-model="form.introduce" type="textarea" placeholder="请输入简介" />
+         <el-input  :rows="4" v-model="form.introduce" type="textarea" placeholder="请输入简介" maxlength="50"/>
        </el-form-item>
 
 
 
-       <el-form-item label="所属组织" prop="orgId">
+       <el-form-item label="所属组织" prop="orgId" v-if="this.userType==0">
          <el-select v-model="form.orgId"  placeholder="请选择" style="width: 100%;">
            <el-option
              v-for="item in OrganizationList"
@@ -107,9 +125,9 @@
        </el-form-item>
 
 
-       <el-form-item label="战区信息" prop="regionInfo">
+      <!-- <el-form-item label="战区信息" prop="regionInfo">
          <el-input v-model="form.regionInfo" placeholder="请输入" />
-       </el-form-item>
+       </el-form-item> -->
 
 
 
@@ -159,6 +177,7 @@ export default {
         regionName: null,
         phone: null
       },
+      userType:null,
       // 表单参数
       form: {},
       // 表单校验
@@ -242,8 +261,13 @@ export default {
     };
   },
   created() {
+     this.userType=localStorage.getItem("userType")
+     console.log(this.userType)
     this.getList();
-    this.getOrganizationList();
+    if(this.userType==0){
+       this.getOrganizationList();
+    }
+   
   },
   methods: {
 
@@ -331,9 +355,13 @@ export default {
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
-      const id = row.id || this.ids
+      const id = row.regionId || this.ids
       getregion(id).then(response => {
         this.form = response.data;
+        this.$nextTick(()=>{
+          this.$refs['cascaderAddr'].inputValue=response.data.provinceName+'/'+response.data.cityName
+        
+        })
         this.open = true;
         this.title = "修改战区";
       });
@@ -342,7 +370,7 @@ export default {
     submitForm() {
       this.$refs["form"].validate(valid => {
         if (valid) {
-          if (this.form.id != null) {
+          if (this.form.regionId != null) {
             updateregion(this.form).then(response => {
               this.msgSuccess("修改成功");
               this.open = false;
@@ -360,7 +388,7 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      const ids = row.id || this.ids;
+      const ids = row.regionId || this.ids;
       this.$confirm('是否确认删除?', "警告", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",

@@ -173,7 +173,7 @@ export default {
     }
     else if(this.imgtype==3)
     {
-      this.uploadUrl="http://kycloudapi.shushangsoft.com/common/upload/doiyin/video"
+      this.uploadUrl=this.UPLOADURL.BaseUrl+"/common/upload?type=100"
     }
     else if(this.imgtype==11){
       this.uploadUrl=this.UPLOADURL.BaseUrl+"/common/upload?type=10"
